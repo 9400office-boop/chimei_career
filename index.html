@@ -246,7 +246,7 @@ canvas{max-width:100%;height:auto}
 
 /* ---------- 系統設定（前端不放金鑰；金鑰在後端） ---------- */
 const CONFIG = {
-  apiUrl: "https://script.google.com/macros/s/AKfycbx5eF9E35rTwmR_oMf-ARKOMpZi0rDo3ovsb73mLzbTYTamvYN4_YlAiBsv0zjC5vU/exec",   // ★貼上 Google Apps Script 部署後的 /exec 網址；留空＝本地示範模式
+  apiUrl: "https://script.google.com/macros/s/AKfycbyD-uGuoCmjorBJm1zozAv4RXApUxnvRuQ71tmnmhHQPKFO4mttngwvow5_f3pT3G0/exec",   // ★貼上 Google Apps Script 部署後的 /exec 網址；留空＝本地示範模式
   token:  "chimei-9400",   // 選填：與 Apps Script 設定的 SHARED_TOKEN 相同，多一層保護
 };
 
@@ -274,29 +274,29 @@ const RADAR_DIMS=[
  {k:'culture',label:'組織文化'},{k:'future',label:'職涯前景'}];
 const ANCHORS=[
  {k:'tech',label:'技術/功能專精',item:'我想在專精領域做到頂尖，勝過被調去管理'},
- {k:'manage',label:'一般管理',item:'我享受帶人、整合資源、為成敗負責'},
- {k:'autonomy',label:'自主/獨立',item:'能自由安排工作方式與步調，比頭銜重要'},
+ {k:'manage',label:'一般管理',item:'我享受帶人、整合資源、為團隊成敗負責'},
+ {k:'autonomy',label:'自主/獨立',item:'對我來說，能自由安排工作方式比頭銜更重要'},
  {k:'security',label:'安全/穩定',item:'我重視穩定、可預期、有保障的工作'},
  {k:'entrepreneur',label:'創業/創造',item:'我渴望創造屬於自己的東西、開創新局'},
- {k:'service',label:'服務/奉獻',item:'工作要能幫助他人或對社會有貢獻才有意義'},
- {k:'challenge',label:'純粹挑戰',item:'我被困難的問題與不可能的任務吸引'},
- {k:'lifestyle',label:'生活型態',item:'工作必須能配合我的生活與家庭'}];
+ {k:'service',label:'服務/奉獻',item:'我希望工作能幫助他人、對社會有貢獻'},
+ {k:'challenge',label:'純粹挑戰',item:'我會被困難或別人覺得不可能的任務吸引'},
+ {k:'lifestyle',label:'生活型態',item:'我希望工作能配合我的生活與家庭'}];
 const VALUES=[
- {k:'achievement',label:'成就',facet:'growth',item:'能不斷做出成果、看見成就'},
- {k:'independence',label:'獨立',facet:'balance',item:'能自主決定怎麼做事'},
- {k:'recognition',label:'認可',facet:'future',item:'努力能被看見、有發展與地位'},
- {k:'relationships',label:'關係',facet:'coworkers',item:'與同事相處融洽、能助人'},
- {k:'support',label:'支持',facet:'supervision',item:'主管公平、組織給予支持'},
- {k:'conditions',label:'工作條件',facet:'pay',item:'薪酬、安全與環境條件良好'}];
+ {k:'achievement',label:'成就',facet:'growth',item:'我重視不斷做出成果、看見成就'},
+ {k:'independence',label:'獨立',facet:'balance',item:'我重視能自主決定怎麼做事'},
+ {k:'recognition',label:'認可',facet:'future',item:'我重視努力被看見、有發展與地位'},
+ {k:'relationships',label:'關係',facet:'coworkers',item:'我重視與同事相處融洽、能互相幫助'},
+ {k:'support',label:'支持',facet:'supervision',item:'我重視主管公平、組織給我支持'},
+ {k:'conditions',label:'工作條件',facet:'pay',item:'我重視薪酬、安全與良好的工作環境'}];
 const SKILLS=[
- {k:'comm',label:'溝通表達',item:'把複雜資訊講得讓人易懂'},
- {k:'analysis',label:'分析/問題解決',item:'追問原因、找出結構與根因'},
- {k:'digital',label:'數位/技術',item:'快速上手工具、善用自動化'},
- {k:'organize',label:'組織/專案',item:'把混亂的事整理成流程並推動'},
- {k:'people',label:'人際/協作',item:'凝聚不同人一起完成事情'},
- {k:'creative',label:'創意/創新',item:'想出不一樣的做法'},
- {k:'lead',label:'領導/影響',item:'帶動他人、影響決策'},
- {k:'learn',label:'學習敏捷',item:'快速學會新領域並應用'}];
+ {k:'comm',label:'溝通表達',item:'我擅長把複雜的資訊講得讓人聽得懂'},
+ {k:'analysis',label:'分析/問題解決',item:'我擅長追問原因、找出問題的結構與根源'},
+ {k:'digital',label:'數位/技術',item:'我能快速上手數位工具、善用自動化'},
+ {k:'organize',label:'組織/專案',item:'我擅長把混亂的事整理成流程並推動完成'},
+ {k:'people',label:'人際/協作',item:'我擅長凝聚不同的人一起把事情完成'},
+ {k:'creative',label:'創意/創新',item:'我常能想出跟別人不一樣的做法'},
+ {k:'lead',label:'領導/影響',item:'我擅長帶動他人、影響決策'},
+ {k:'learn',label:'學習敏捷',item:'我能快速學會新領域並實際應用'}];
 /* Big Five：每特質 2 題(1 正向 1 反向)，rev=true 需反向計分 */
 const BIGFIVE=[
  {t:'O',label:'開放性',item:'我喜歡接觸新觀念、嘗試沒做過的方法',rev:false},
@@ -316,6 +316,31 @@ const FOURC=[
  {k:'confidence',label:'行動信心',item:'面對職涯選擇，我相信能處理好'}];
 const TRAIT_NAME={O:'開放性',C:'嚴謹自律性',E:'外向性',A:'親和性',N:'情緒敏感度'};
 const STAGE_NAME={explore:'探索期',establish:'建立期',maintain:'維持期',transition:'轉換期'};
+
+/* ---------- 解讀文字庫：把分數翻譯成有意義的話 ---------- */
+const ANCHOR_MEANING={
+ tech:'你最在意「把專業做到精」——比起當主管，你更想成為某領域的高手。適合走專業／技術深耕路線，讓專業本身成為你的招牌。',
+ manage:'你享受帶人、整合資源、為團隊成敗負責，內在偏向管理與領導。適合朝專案管理、團隊主管或跨部門整合的位置發展。',
+ autonomy:'你最看重自由與自主，「能自己決定怎麼做事」比頭銜更重要。適合彈性高、能自主規劃的角色，過度層級控管會讓你綁手綁腳。',
+ security:'你最重視穩定與保障，傾向在可預期的環境中穩步前進。發展宜採漸進、低風險的方式，一次跨太大反而不安。',
+ entrepreneur:'你被「從無到有、創造新東西」吸引，適合開創、新事業或組織內的創新型工作，讓你有空間打造自己的東西。',
+ service:'你需要工作有意義、能幫助他人或社會；當任務連結到使命感時，你最投入也最有續航力。',
+ challenge:'你被困難與挑戰驅動，越難的問題越有勁。適合需要持續突破、不重複的舞台，太安逸反而會無聊。',
+ lifestyle:'你最在意工作與生活的整體平衡，會用「能不能配合我的生活」來篩選機會。彈性與可控的步調，對你比衝刺更重要。'
+};
+const TRAIT_MEANING={
+ O:{high:'點子多、喜歡新事物，適合變化與創意空間大的工作。',mid:'兼具新意與務實，能在創新與穩定之間取得平衡。',low:'務實、重視可行性，喜歡清楚的流程與穩定的做法。'},
+ C:{high:'自律、有條理、說到做到，是團隊裡可靠的執行者。',mid:'多數時候有規劃，也保有一些彈性。',low:'較隨性、靠興趣驅動，適合彈性高、能即興發揮的環境。'},
+ E:{high:'從互動中獲得能量，擅長社交與帶動氣氛。',mid:'能社交也能獨處，視情況調整。',low:'偏好安靜與深度思考，獨立作業時更有產能。'},
+ A:{high:'重視關係與和諧，善於體諒與協調。',mid:'兼顧他人感受與自己立場。',low:'較有主見、敢直言，做決策時不易被情面左右。'},
+ N:{high:'情緒感受細膩、對壓力較敏感；做好情緒管理，這份敏感會變成觀察力的優勢。',mid:'情緒大致穩定，偶有起伏。',low:'情緒穩定、抗壓性佳，遇事冷靜。'}
+};
+const STAGE_MEANING={
+ explore:'你還在摸索方向，重點是多方嘗試、蒐集資訊，先體驗再收斂，不必急著定下唯一答案。',
+ establish:'你正在某個方向上立足，重點是聚焦深耕、累積能被看見的成果，把專業站穩。',
+ maintain:'你已相對穩定，適合思考下一步：是再上一層，還是開展屬於自己的第二曲線。',
+ transition:'你正考慮轉換，重點是盤點手上「帶得走」的能力，規劃漸進、風險可控的下一步。'
+};
 
 /* ---------- 建立表單 ---------- */
 /* 數字按鈕評分（取代滑桿，較好點選）；選到的值存進隱藏 input，計分邏輯不變 */
@@ -386,7 +411,7 @@ function score(d){
 /* ---------- 規則引擎（對應規則表 22 條；test→make） ---------- */
 const RULES=[
  {id:'SUM-01',p:0,test:()=>true,make:(d,s)=>({concl:'整體畫像摘要',dir:'核心優勢+主導動機+首要改善',
-   text:`<b>整體畫像</b>：你的招牌是「${s.topSkills[0].label}」，主導動機是「${s.dominantAnchor.label}」，目前最該優先處理的是「${s.radarGaps[0].label}」。`})},
+   text:`<b>整體畫像</b>：你的專業底氣來自「${s.topSkills[0].label}」與「${s.topSkills[1].label}」，內在主要被「${s.dominantAnchor.label}」這股動機推動；接下來最值得投入心力的，是把「${s.radarGaps[0].label}」這個面向顧好。`})},
  {id:'SAT-01',p:0,test:(d,s)=>s.radarGaps[0].gap>=4,make:(d,s)=>({concl:`${s.radarGaps[0].label} 為優先改善缺口`,dir:'設一個本季可量化小目標',
    text:`<b>優先處理</b>：「${s.radarGaps[0].label}」你覺得重要、但目前滿意度偏低（差 ${s.radarGaps[0].gap} 分），是最該投入的面向。先設一個本季可量化的小目標（例如把滿意度拉高 1–2 分要做的一件事）。`})},
  {id:'SAT-02',p:0,test:(d,s)=>s.satisfaction<50&&s.balance<60,make:()=>({concl:'處於耗損/失衡風險',dir:'先穩住與自我照顧，暫緩衝刺',
@@ -422,7 +447,7 @@ const RULES=[
  {id:'STG-04',p:1,test:(d,s)=>s.lowC.length>0,make:(d,s)=>({concl:`適應力待強化：${s.lowC.map(c=>c.label).join('、')}`,dir:'針對該C給小練習',
    text:`<b>補一點職涯適應力</b>：你在「${s.lowC.map(c=>c.label).join('、')}」分數較低。可以從一個小練習開始，例如每週花 30 分鐘為未來做一件準備、或主動找一位前輩聊聊。`})},
  {id:'GOAL-01',p:1,test:(d,s)=>!s.smartHasNumber,make:()=>({concl:'目標不夠可衡量',dir:'補上數字指標或完成日期',
-   text:`<b>讓目標可衡量</b>：你的目標還缺少具體數字或時間。試著把「想成長」改成「半年內完成 X、影響 Y 人」，才追蹤得到進度。`})},
+   text:`<b>把目標變得可追蹤</b>：你的目標可以再具體一點——加上「做到什麼程度、什麼時候完成」。例如「提升專業」可寫成「今年底前完成一張相關證照」、「擴大影響力」可寫成「半年內主辦兩場分享、累積五十位參與者」。具體了，才看得出自己有沒有在前進。`})},
  {id:'GOAL-02',p:1,test:(d,s)=>{const m=({autonomy:'independence',manage:'recognition',service:'relationships',security:'conditions',tech:'achievement',challenge:'achievement',entrepreneur:'achievement',lifestyle:'independence'})[s.dominantAnchor.k];return m && !s.topValues.includes(VALUES.find(v=>v.k===m)?.label) && false;},make:()=>({concl:'目標與動機對齊檢查',dir:'確認非他人期待',text:''})},
  {id:'DRV-01',p:1,test:(d,s)=>s.dominantAnchor.k==='security'&&s.satisfaction<50,make:()=>({concl:'可能由逃避痛苦驅動',dir:'溫和提醒分辨趨近或逃避',
    text:`<b>一個溫和的提醒</b>：當「穩定」是主要動力、而目前的滿意度又偏低時，值得停下來分辨：你是「想要」這份穩定，還是「害怕」改變？沒有對錯，只是多一個自我覺察的角度。`})},
@@ -520,6 +545,7 @@ function render(data,sc,rules,gen){
     ${sc.skillsSorted.map(s=>`<div class="barline"><b>${s.label}</b><div class="bar"><i style="width:${s.score*20}%"></i></div><span class="vv">${s.score}/5</span></div>`).join('')}`;
 
   document.getElementById('t_drive').innerHTML=`
+    <div class="mentorbox" style="background:#EEF0FF;border-color:#C7CEFF;color:#3730A3">你最主要的動機是「<b>${sc.dominantAnchor.label}</b>」。${ANCHOR_MEANING[sc.dominantAnchor.k]||''}</div>
     <div class="secti">你的內在驅力排序</div>
     ${sc.anchorsSorted.map((a,i)=>`<div class="barline"><b>${i===0?'★ ':''}${a.label}</b><div class="bar"><i style="width:${a.score/6*100}%"></i></div><span class="vv">${a.score}/6</span></div>`).join('')}
     <div class="secti ok">工作價值觀（重要度）</div>
@@ -527,11 +553,14 @@ function render(data,sc,rules,gen){
     ${sc.valueGaps.length?`<div class="mentorbox" style="margin-top:12px">⚠ 你很重視「${sc.valueGaps.map(v=>v.label).join('、')}」，但目前比較少被滿足——這是值得關注的調整訊號。</div>`:''}`;
 
   document.getElementById('t_person').innerHTML=`
-    <p class="muted" style="margin-bottom:10px">以下是你的性格傾向，僅供自我探索參考，不是臨床評估。</p>
-    ${Object.keys(TRAIT_NAME).map(t=>`<div class="barline"><b>${TRAIT_NAME[t]}</b><div class="bar"><i style="width:${(sc.bigfive[t]-2)/8*100}%"></i></div><span class="vv">${levelTag(sc.bigfiveLevels[t])}</span></div>`).join('')}`;
+    <p class="muted" style="margin-bottom:12px">以下是你的性格傾向，僅供自我探索參考，不是臨床評估。每項下方有簡短解讀。</p>
+    ${Object.keys(TRAIT_NAME).map(t=>`
+      <div class="barline" style="margin-bottom:2px"><b>${TRAIT_NAME[t]}</b><div class="bar"><i style="width:${(sc.bigfive[t]-2)/8*100}%"></i></div><span class="vv">${levelTag(sc.bigfiveLevels[t])}</span></div>
+      <p class="muted" style="margin:0 0 12px 128px;font-size:.82rem">${TRAIT_MEANING[t][sc.bigfiveLevels[t]]}</p>`).join('')}`;
 
   document.getElementById('t_stage').innerHTML=`
     <div class="tagrow"><span class="tg" style="font-size:.9rem">目前階段：${STAGE_NAME[sc.stage]}</span></div>
+    <div class="mentorbox" style="background:#EEF0FF;border-color:#C7CEFF;color:#3730A3">${STAGE_MEANING[sc.stage]||''}</div>
     <div class="secti">職涯適應力</div>
     ${data.fourc.map(c=>`<div class="barline"><b>${c.label}</b><div class="bar ${c.score<3?'warn':''}"><i style="width:${c.score*20}%"></i></div><span class="vv">${c.score}/5</span></div>`).join('')}
     ${sc.lowC.length?`<div class="mentorbox" style="margin-top:12px">待強化：${sc.lowC.map(c=>c.label).join('、')}。報告下方 AI Mentor 已針對此給建議。</div>`:''}`;
