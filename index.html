@@ -143,11 +143,16 @@ canvas{max-width:100%;height:auto}
 .toast.show{transform:translateX(-50%) translateY(0);opacity:1}
 @media(max-width:720px){.grid2,.grid3{grid-template-columns:1fr}.scale{grid-template-columns:1fr 110px 26px}.rhead,.rrow{grid-template-columns:78px 1fr 30px 1fr 30px;gap:8px;padding:9px}.tabnav{position:static}.stepper{flex-wrap:wrap}.step{flex:1 1 45%}}
 @media print{
-  .appbar,.tabnav,.actions,.stepper{display:none!important}
-  .report-body{display:block!important}        /* 列印時把左右欄改單欄，避免 flex 塌掉變空白 */
-  .report-main{width:100%!important;display:block!important}
-  #report{max-width:100%!important}
-  .tc{display:block!important;page-break-inside:avoid;margin-bottom:18px}
+  body{background:#fff!important}
+  .appbar,.tabnav,.actions,.stepper,.loading{display:none!important}
+  .wrap{max-width:100%!important;padding:0!important}
+  #report{max-width:100%!important;margin:0!important}
+  /* 列印時把左右欄改單欄，避免 flex 塌掉變空白 */
+  .report-body{display:block!important}
+  .report-main{display:block!important;width:100%!important;min-width:0!important;flex:none!important}
+  /* 所有分頁全部展開，並關掉淡入動畫/透明/位移，避免內容變透明不見 */
+  .tc{display:block!important;opacity:1!important;transform:none!important;animation:none!important;margin:0 0 22px 0!important}
+  #report,.report-body,.report-main{overflow:visible!important;height:auto!important}
   .mapband,.rephead{-webkit-print-color-adjust:exact;print-color-adjust:exact}
 }
 .loading{position:fixed;inset:0;background:rgba(255,255,255,.93);backdrop-filter:blur(2px);display:none;flex-direction:column;align-items:center;justify-content:center;gap:18px;z-index:200}
@@ -257,7 +262,7 @@ canvas{max-width:100%;height:auto}
 
   <div class="card">
     <div class="card-h"><span class="idx">B</span><h3>職涯滿意度</h3></div>
-    <p class="desc">針對工作的 8 個面向，每項給兩個分數：「滿意度」是你對這個面向有多滿意；「重要度」是這個面向對你有多重要。系統會找出「你很重視、卻還不滿意」的面向，那就是最值得優先處理的地方。</p>
+    <p class="desc">以下 8 個面向都是你「目前這份工作」的一部分。每一項請從<b>你自己的角度</b>評兩個分數：你對它的「滿意度」（你有多滿意，不是評斷別人），以及它對你的「重要度」。例如「主管的支持與領導」是問你對主管給你的支持有多滿意。系統會找出「你很重視、卻還不滿意」的面向，作為優先改善方向。</p>
     <div class="legend">點數字選分　1＝很低　10＝很高</div>
     <div id="radarRows"></div>
   </div>
@@ -370,9 +375,9 @@ function buildLLMPayload(data, sc, route, triggered){
 
 /* ---------- 題庫（依框架，題目自寫；正式版移後端 DB） ---------- */
 const RADAR_DIMS=[
- {k:'content',label:'工作內容'},{k:'growth',label:'專業成長'},{k:'supervision',label:'主管/領導'},
- {k:'coworkers',label:'團隊關係'},{k:'pay',label:'薪酬報酬'},{k:'balance',label:'工作生活平衡'},
- {k:'culture',label:'組織文化'},{k:'future',label:'職涯前景'}];
+ {k:'content',label:'工作內容'},{k:'growth',label:'成長機會'},{k:'supervision',label:'主管支持'},
+ {k:'coworkers',label:'團隊關係'},{k:'pay',label:'薪資報酬'},{k:'balance',label:'工作生活平衡'},
+ {k:'culture',label:'組織文化'},{k:'future',label:'發展前景'}];
 const ANCHORS=[
  {k:'tech',label:'技術/功能專精',item:'我想在專精領域做到頂尖，勝過被調去管理'},
  {k:'manage',label:'一般管理',item:'我享受帶人、整合資源、為團隊成敗負責'},
