@@ -59,6 +59,21 @@ input[type=range].idl::-webkit-slider-thumb{background:var(--teal)}
 .scale .nm{font-size:.89rem;font-weight:500}.scale .nm small{display:block;color:var(--muted-2);font-size:.74rem;font-weight:400;margin-top:1px}
 .scale .v{text-align:center;font-weight:700;color:var(--brand);font-size:.9rem}
 .legend{font-size:.74rem;color:var(--muted-2);margin-bottom:10px}
+.qitem{padding:14px 0;border-top:1px solid var(--line-2)}
+.qitem:first-child{border-top:none}
+.qhead{font-size:.92rem;font-weight:600;margin-bottom:9px}
+.qhead small{display:block;color:var(--muted-2);font-size:.76rem;font-weight:400;margin-top:2px}
+.qscale{display:flex;align-items:center;gap:10px;margin-bottom:8px;flex-wrap:wrap}
+.qtag{font-size:.74rem;font-weight:700;padding:4px 10px;border-radius:7px;min-width:62px;text-align:center}
+.qtag.cur{color:var(--brand);background:var(--brand-50)}
+.qtag.idl{color:var(--teal);background:var(--teal-50)}
+.btnscale{display:flex;gap:6px;flex-wrap:wrap}
+.sbtn{min-width:40px;height:40px;padding:0 4px;border:1px solid var(--line);background:#fff;border-radius:10px;font-size:.92rem;font-weight:600;color:var(--ink-2);cursor:pointer;transition:.12s}
+.sbtn:hover{border-color:var(--brand);color:var(--brand)}
+.sbtn.sel{background:var(--brand);border-color:var(--brand);color:#fff;box-shadow:0 2px 8px rgba(79,70,229,.28)}
+.btnscale.idl .sbtn:hover{border-color:var(--teal);color:var(--teal)}
+.btnscale.idl .sbtn.sel{background:var(--teal);border-color:var(--teal);color:#fff;box-shadow:0 2px 8px rgba(13,148,136,.28)}
+@media(max-width:720px){.sbtn{min-width:34px;height:40px;font-size:.88rem}}
 .actions{display:flex;gap:12px;justify-content:flex-end;align-items:center;flex-wrap:wrap}
 .btn{border:none;border-radius:11px;font-size:.92rem;font-weight:700;cursor:pointer;padding:13px 24px;transition:.15s}
 .btn-primary{background:var(--brand);color:#fff;box-shadow:0 6px 18px rgba(79,70,229,.28)}.btn-primary:hover{background:var(--brand-700)}
@@ -126,11 +141,11 @@ canvas{max-width:100%;height:auto}
 <div id="assess">
   <div class="hero">
     <h2>職涯發展測評</h2>
-    <p>本測評對應公認職涯框架（職涯滿意度、Schein 職涯錨、O*NET 工作價值、Big Five、Super 生涯階段）。完成後系統以規則引擎產生結論，再由 AI 潤飾成個人化報告。</p>
+    <p>花幾分鐘填寫下列題目，系統會即時為你整理出個人化的職涯報告與發展建議。所有內容僅用於你的職涯規劃。</p>
     <div class="stepper" id="stepper">
       <div class="step on" data-s="1"><span class="n">1</span>填寫測評</div>
-      <div class="step" data-s="2"><span class="n">2</span>規則計分</div>
-      <div class="step" data-s="3"><span class="n">3</span>AI 潤飾</div>
+      <div class="step" data-s="2"><span class="n">2</span>分析中</div>
+      <div class="step" data-s="3"><span class="n">3</span>整理建議</div>
       <div class="step" data-s="4"><span class="n">4</span>產出報告</div>
     </div>
   </div>
@@ -147,38 +162,39 @@ canvas{max-width:100%;height:auto}
   </div>
 
   <div class="card">
-    <div class="card-h"><span class="idx">B</span><h3>職涯滿意度雷達</h3><span class="fw">工作滿意度面向</span></div>
-    <p class="desc">8 面向，各給「現況」與「理想」（1–10）。規則引擎以此找出優先改善缺口。</p>
-    <div class="rtable"><div class="rhead"><div>面向</div><div>現況</div><div></div><div>理想</div><div></div></div><div id="radarRows"></div></div>
+    <div class="card-h"><span class="idx">B</span><h3>職涯滿意度</h3></div>
+    <p class="desc">針對工作的 8 個面向，每項給兩個分數：「滿意度」是你對這個面向有多滿意；「重要度」是這個面向對你有多重要。系統會找出「你很重視、卻還不滿意」的面向，那就是最值得優先處理的地方。</p>
+    <div class="legend">點數字選分　1＝很低　10＝很高</div>
+    <div id="radarRows"></div>
   </div>
 
   <div class="card">
-    <div class="card-h"><span class="idx">C</span><h3>職涯動機 · 職涯錨</h3><span class="fw">Schein Career Anchors</span></div>
-    <p class="desc">為每種內在驅力評重要度（1–6）。分數最高者為你的「主導錨」，決定建議方向。</p>
+    <div class="card-h"><span class="idx">C</span><h3>職涯動機</h3></div>
+    <p class="desc">為每種內在動力評重要度（1–6）。分數最高的，就是最能驅動你的動機。</p>
     <div class="legend">1＝不重要　6＝非常重要</div><div id="anchorRows"></div>
   </div>
 
   <div class="card">
-    <div class="card-h"><span class="idx">D</span><h3>工作價值觀</h3><span class="fw">O*NET Work Values</span></div>
-    <p class="desc">評每項價值的重要度（1–5）。重視卻在現況未被滿足者＝價值落差，是轉職關鍵訊號。</p>
+    <div class="card-h"><span class="idx">D</span><h3>工作價值觀</h3></div>
+    <p class="desc">評每項價值對你的重要度（1–5）。你很重視、卻在目前工作較少被滿足的，會是值得關注的訊號。</p>
     <div class="legend">1＝不重要　5＝非常重要</div><div id="valueRows"></div>
   </div>
 
   <div class="card">
-    <div class="card-h"><span class="idx">E</span><h3>核心能力盤點</h3><span class="fw">可遷移能力</span></div>
-    <p class="desc">為每類能力自評（1–5）。最高 2 項＝招牌優勢；最低項依與目標相關性決定補強或外包。</p>
+    <div class="card-h"><span class="idx">E</span><h3>核心能力盤點</h3></div>
+    <p class="desc">為每類能力自評（1–5）。分數最高的會成為你的核心優勢。</p>
     <div class="legend">1＝很弱　5＝很強</div><div id="skillRows"></div>
   </div>
 
   <div class="card">
-    <div class="card-h"><span class="idx">F</span><h3>性格傾向</h3><span class="fw">Big Five (OCEAN)</span></div>
-    <p class="desc">10 題，依直覺評分（1＝不符合，5＝很符合）。本量表採公開題庫，非 MBTI。</p>
+    <div class="card-h"><span class="idx">F</span><h3>性格傾向</h3></div>
+    <p class="desc">依直覺為下列描述評分（1＝不符合，5＝很符合），幫助你了解自己的工作風格。</p>
     <div class="legend">1＝非常不同意　5＝非常同意</div><div id="bigfiveRows"></div>
   </div>
 
   <div class="card">
-    <div class="card-h"><span class="idx">G</span><h3>職涯階段與適應力</h3><span class="fw">Super 階段 + 4C</span></div>
-    <p class="desc">先選你目前的職涯階段，再評四項適應力。低於 3 者會觸發針對性建議。</p>
+    <div class="card-h"><span class="idx">G</span><h3>職涯階段與適應力</h3></div>
+    <p class="desc">先選你目前的職涯階段，再為四項適應力評分，系統會依此給你合適的建議。</p>
     <div style="margin-bottom:14px"><label class="fld">我目前比較像是…</label>
       <select id="stage">
         <option value="explore">探索期 — 還在摸索方向、嘗試可能</option>
@@ -186,12 +202,12 @@ canvas{max-width:100%;height:auto}
         <option value="maintain">維持期 — 已穩定，思考下一步或第二曲線</option>
         <option value="transition">轉換期 — 正考慮轉職或轉型</option>
       </select></div>
-    <div class="legend">適應力 4C（1＝低　5＝高）</div><div id="fourcRows"></div>
+    <div class="legend">四項適應力（1＝低　5＝高）</div><div id="fourcRows"></div>
   </div>
 
   <div class="card">
-    <div class="card-h"><span class="idx">H</span><h3>目標與願景</h3><span class="fw">SMART</span></div>
-    <p class="desc">建議寫得具體、含數字與時間，系統會檢查 SMART 完整度並拆解十年願景。</p>
+    <div class="card-h"><span class="idx">H</span><h3>目標與願景</h3></div>
+    <p class="desc">建議寫得具體、含數字與時間，系統會幫你拆解成十年願景。</p>
     <div class="grid3">
       <div><label class="fld">短期（1 年）</label><textarea id="g_short" placeholder="建議含數字與時間，例：一年內完成 2 場工作坊、培訓 30 人"></textarea></div>
       <div><label class="fld">中期（2–3 年）</label><textarea id="g_mid" placeholder="例：發表 1 篇研究、建立某項計畫"></textarea></div>
@@ -205,7 +221,6 @@ canvas{max-width:100%;height:auto}
       <span class="note">完成後按下方按鈕，系統會即時為你生成個人化職涯報告。</span>
       <button class="btn btn-primary" onclick="run()">生成我的職涯報告 →</button>
     </div>
-    <div class="confbox"><b>給系統管理者：</b>本頁不含任何 API 金鑰。接上線只需把 Google Apps Script 部署網址填入程式開頭的 <code>CONFIG.apiUrl</code>，金鑰存在 Apps Script 後台（見隨附「上線設定步驟」）。AI Prompt 在 <code>AI_SYSTEM_PROMPT</code> 常數，規則引擎見 <code>RULES</code>／<code>runRules()</code>。</div>
   </div>
 </div>
 
@@ -222,7 +237,6 @@ canvas{max-width:100%;height:auto}
   <div class="tc" id="mentor"></div>
   <div class="card"><div class="actions">
     <span class="note" id="repNote"></span>
-    <button class="btn btn-ghost" onclick="saveSubmission()">儲存我的測評</button>
     <button class="btn btn-ghost" onclick="backToForm()">← 修改重生成</button>
     <button class="btn btn-ghost" onclick="window.print()">列印 / PDF</button>
   </div></div>
@@ -315,27 +329,36 @@ const BIGFIVE=[
  {t:'N',label:'神經質',item:'我容易感到焦慮或情緒起伏',rev:false},
  {t:'N',label:'神經質',item:'我大多時候情緒穩定、不易煩躁',rev:true}];
 const FOURC=[
- {k:'concern',label:'關注 Concern',item:'我會主動為未來職涯做準備'},
- {k:'control',label:'控制 Control',item:'我相信職涯主要掌握在自己手中'},
- {k:'curiosity',label:'好奇 Curiosity',item:'我會主動探索各種可能與機會'},
- {k:'confidence',label:'信心 Confidence',item:'面對職涯選擇，我相信能處理好'}];
-const TRAIT_NAME={O:'開放性',C:'嚴謹自律性',E:'外向性',A:'親和性',N:'神經質'};
+ {k:'concern',label:'關注未來',item:'我會主動為未來職涯做準備'},
+ {k:'control',label:'自我掌控',item:'我相信職涯主要掌握在自己手中'},
+ {k:'curiosity',label:'保持好奇',item:'我會主動探索各種可能與機會'},
+ {k:'confidence',label:'行動信心',item:'面對職涯選擇，我相信能處理好'}];
+const TRAIT_NAME={O:'開放性',C:'嚴謹自律性',E:'外向性',A:'親和性',N:'情緒敏感度'};
 const STAGE_NAME={explore:'探索期',establish:'建立期',maintain:'維持期',transition:'轉換期'};
 
 /* ---------- 建立表單 ---------- */
-function rangeRow(id,min,max,val){return `<input type="range" min="${min}" max="${max}" value="${val}" id="${id}" oninput="document.getElementById('v_${id}').textContent=this.value"><span class="v" id="v_${id}">${val}</span>`;}
+/* 數字按鈕評分（取代滑桿，較好點選）；選到的值存進隱藏 input，計分邏輯不變 */
+function btnScale(id,min,max,def,idl){
+  let h=`<div class="btnscale${idl?' idl':''}">`;
+  for(let i=min;i<=max;i++){h+=`<button type="button" class="sbtn${i===def?' sel':''}" onclick="pick('${id}',${i},this)">${i}</button>`;}
+  return h+`</div><input type="hidden" id="${id}" value="${def}">`;
+}
+function pick(id,v,btn){
+  document.getElementById(id).value=v;
+  Array.prototype.forEach.call(btn.parentNode.children,function(b){b.classList.remove('sel');});
+  btn.classList.add('sel');
+}
 function buildForm(){
   document.getElementById('radarRows').innerHTML=RADAR_DIMS.map(d=>`
-    <div class="rrow"><b>${d.label}</b>
-      <input type="range" min="1" max="10" value="5" id="rc_${d.k}" oninput="document.getElementById('vc_${d.k}').textContent=this.value"><span class="pill cur" id="vc_${d.k}">5</span>
-      <input type="range" min="1" max="10" value="8" class="idl" id="ri_${d.k}" oninput="document.getElementById('vi_${d.k}').textContent=this.value"><span class="pill idl" id="vi_${d.k}">8</span></div>`).join('');
-  document.getElementById('anchorRows').innerHTML=ANCHORS.map(a=>`<div class="scale"><span class="nm">${a.label}<small>${a.item}</small></span>${rangeRow('an_'+a.k,1,6,3)}</div>`).join('');
-  document.getElementById('valueRows').innerHTML=VALUES.map(v=>`<div class="scale"><span class="nm">${v.label}<small>${v.item}</small></span>${rangeRow('va_'+v.k,1,5,3)}</div>`).join('');
-  document.getElementById('skillRows').innerHTML=SKILLS.map(s=>`<div class="scale"><span class="nm">${s.label}<small>${s.item}</small></span>${rangeRow('sk_'+s.k,1,5,3)}</div>`).join('');
-  document.getElementById('bigfiveRows').innerHTML=BIGFIVE.map((b,i)=>`<div class="scale"><span class="nm">${b.item}</span>${rangeRow('bf_'+i,1,5,3)}</div>`).join('');
-  document.getElementById('fourcRows').innerHTML=FOURC.map(c=>`<div class="scale"><span class="nm">${c.label}<small>${c.item}</small></span>${rangeRow('fc_'+c.k,1,5,3)}</div>`).join('');
+    <div class="qitem"><div class="qhead">${d.label}</div>
+      <div class="qscale"><span class="qtag cur">滿意度</span>${btnScale('rc_'+d.k,1,10,5)}</div>
+      <div class="qscale"><span class="qtag idl">重要度</span>${btnScale('ri_'+d.k,1,10,5,true)}</div></div>`).join('');
+  document.getElementById('anchorRows').innerHTML=ANCHORS.map(a=>`<div class="qitem"><div class="qhead">${a.label}<small>${a.item}</small></div>${btnScale('an_'+a.k,1,6,3)}</div>`).join('');
+  document.getElementById('valueRows').innerHTML=VALUES.map(v=>`<div class="qitem"><div class="qhead">${v.label}<small>${v.item}</small></div>${btnScale('va_'+v.k,1,5,3)}</div>`).join('');
+  document.getElementById('skillRows').innerHTML=SKILLS.map(s=>`<div class="qitem"><div class="qhead">${s.label}<small>${s.item}</small></div>${btnScale('sk_'+s.k,1,5,3)}</div>`).join('');
+  document.getElementById('bigfiveRows').innerHTML=BIGFIVE.map((b,i)=>`<div class="qitem"><div class="qhead">${b.item}</div>${btnScale('bf_'+i,1,5,3)}</div>`).join('');
+  document.getElementById('fourcRows').innerHTML=FOURC.map(c=>`<div class="qitem"><div class="qhead">${c.label}<small>${c.item}</small></div>${btnScale('fc_'+c.k,1,5,3)}</div>`).join('');
 }
-function setR(id,v){const e=document.getElementById(id);if(!e)return;e.value=v;e.dispatchEvent(new Event('input'));}
 
 /* ---------- ② 計分 ---------- */
 function collect(){
@@ -384,19 +407,19 @@ const RULES=[
  {id:'SUM-01',p:0,test:()=>true,make:(d,s)=>({concl:'整體畫像摘要',dir:'核心優勢+主導動機+首要改善',
    text:`<b>整體畫像</b>：你的招牌是「${s.topSkills[0].label}」，主導動機是「${s.dominantAnchor.label}」，目前最該優先處理的是「${s.radarGaps[0].label}」。`})},
  {id:'SAT-01',p:0,test:(d,s)=>s.radarGaps[0].gap>=4,make:(d,s)=>({concl:`${s.radarGaps[0].label} 為優先改善缺口`,dir:'設一個本季可量化小目標',
-   text:`<b>優先處理落差</b>：「${s.radarGaps[0].label}」現況與理想差 ${s.radarGaps[0].gap} 分，是最該投入的面向。先設一個本季可量化的小目標（例如把分數從現在拉高 1–2 分要做的一件事）。`})},
+   text:`<b>優先處理</b>：「${s.radarGaps[0].label}」你覺得重要、但目前滿意度偏低（差 ${s.radarGaps[0].gap} 分），是最該投入的面向。先設一個本季可量化的小目標（例如把滿意度拉高 1–2 分要做的一件事）。`})},
  {id:'SAT-02',p:0,test:(d,s)=>s.satisfaction<50&&s.balance<60,make:()=>({concl:'處於耗損/失衡風險',dir:'先穩住與自我照顧，暫緩衝刺',
    text:`<b>先照顧好自己</b>：目前整體滿意度與平衡度都偏低，建議先穩住節奏、降低負荷，暫緩衝刺型目標。若壓力持續，找信任的人或院內資源聊聊會有幫助。`})},
  {id:'SAT-03',p:2,test:(d,s)=>s.radarGaps.filter(x=>x.cur>=8).length>=5,make:()=>({concl:'整體狀態良好',dir:'設定進階挑戰',
    text:`<b>把好狀態變成動能</b>：你多數面向都相當滿意，可以開始設定更有挑戰性的進階目標，或擴展你的影響力範圍。`})},
  {id:'ANC-01',p:1,test:(d,s)=>s.dominantAnchor.k==='autonomy',make:()=>({concl:'偏好彈性與自主',dir:'專案自主型角色，避免高度層級控管',
-   text:`<b>順著「自主」發展</b>：你的主導錨是自主/獨立，傾向能自由安排工作方式的角色（如專案主導、彈性任務），高度層級控管的位置可能讓你綁手綁腳。`})},
+   text:`<b>順著「自主」發展</b>：你最主要的動機是自主與獨立，傾向能自由安排工作方式的角色（如專案主導、彈性任務），高度層級控管的位置可能讓你綁手綁腳。`})},
  {id:'ANC-02',p:1,test:(d,s)=>s.dominantAnchor.k==='security',make:()=>({concl:'偏好穩定與可預測',dir:'漸進式發展，避免高風險轉職',
    text:`<b>穩中求進</b>：你重視安全與穩定，建議用漸進、低風險的方式發展，避免一次性的大跳躍轉職。`})},
  {id:'ANC-03',p:1,test:(d,s)=>['service','challenge'].includes(s.dominantAnchor.k),make:(d,s)=>({concl:'由意義或挑戰驅動',dir:'選題連結使命或高難度突破',
    text:`<b>讓「${s.dominantAnchor.label}」帶你選題</b>：挑專案時優先選能連結使命感、或夠有挑戰性的題目，你會更投入也更有產出。`})},
  {id:'ANC-04',p:2,test:(d,s)=>['manage','entrepreneur'].includes(s.dominantAnchor.k),make:(d,s)=>({concl:'偏好整合與開創',dir:'朝帶人、跨域整合或新計畫主導',
-   text:`<b>往整合與開創走</b>：你的主導錨是「${s.dominantAnchor.label}」，適合朝帶人、跨域整合或主導新計畫發展。`})},
+   text:`<b>往整合與開創走</b>：你最主要的動機是「${s.dominantAnchor.label}」，適合朝帶人、跨域整合或主導新計畫發展。`})},
  {id:'VAL-01',p:0,test:(d,s)=>s.valueGaps.length>0,make:(d,s)=>({concl:`價值落差：${s.valueGaps.map(v=>v.label).join('、')}`,dir:'朝能實現此價值的方向調整或在現職創造空間',
    text:`<b>注意價值落差</b>：你很重視「${s.valueGaps.map(v=>v.label).join('、')}」，但目前對應面向的滿意度偏低。可以想想：是在現職創造實現它的空間，還是該朝更能滿足它的方向調整？兩條路都先列出來再選。`})},
  {id:'SKL-01',p:0,test:()=>true,make:(d,s)=>({concl:'招牌優勢',dir:'包裝成作品/方法論放大辨識度',
@@ -421,7 +444,7 @@ const RULES=[
    text:`<b>讓目標可衡量</b>：你的目標還缺少具體數字或時間。試著把「想成長」改成「半年內完成 X、影響 Y 人」，才追蹤得到進度。`})},
  {id:'GOAL-02',p:1,test:(d,s)=>{const m=({autonomy:'independence',manage:'recognition',service:'relationships',security:'conditions',tech:'achievement',challenge:'achievement',entrepreneur:'achievement',lifestyle:'independence'})[s.dominantAnchor.k];return m && !s.topValues.includes(VALUES.find(v=>v.k===m)?.label) && false;},make:()=>({concl:'目標與動機對齊檢查',dir:'確認非他人期待',text:''})},
  {id:'DRV-01',p:1,test:(d,s)=>s.dominantAnchor.k==='security'&&s.satisfaction<50,make:()=>({concl:'可能由逃避痛苦驅動',dir:'溫和提醒分辨趨近或逃避',
-   text:`<b>一個溫和的提醒</b>：當「穩定」是主要動力、而現況滿意度又偏低時，值得停下來分辨：你是「想要」這份穩定，還是「害怕」改變？沒有對錯，只是多一個自我覺察的角度。`})},
+   text:`<b>一個溫和的提醒</b>：當「穩定」是主要動力、而目前的滿意度又偏低時，值得停下來分辨：你是「想要」這份穩定，還是「害怕」改變？沒有對錯，只是多一個自我覺察的角度。`})},
 ];
 function runRules(d,s){
   const fired=RULES.filter(r=>{try{return r.test(d,s);}catch(e){return false;}}).map(r=>({id:r.id,p:r.p,...r.make(d,s)})).filter(x=>x.text);
@@ -475,6 +498,7 @@ async function run(){
   const gen=await generate(data,sc,rules);setStep(4);
   last={data,sc,rules,gen,ts:new Date().toISOString()};
   render(data,sc,rules,gen);
+  saveSubmission();   // 生成報告時自動儲存，使用者不需另外按按鈕
 }
 function levelTag(t){const lv=t;return `<span class="tg lv-${lv}">${lv==='high'?'偏高':lv==='low'?'偏低':'中等'}</span>`;}
 function render(data,sc,rules,gen){
@@ -484,10 +508,9 @@ function render(data,sc,rules,gen){
   document.getElementById('rTitle').textContent=`${p.name} 的職涯發展報告`;
   document.getElementById('rVision').textContent='願景：'+data.goals.vision;
   document.getElementById('rBadges').innerHTML=
-    `<span class="badge ${gen.usedAI?'ai':''}">${gen.usedAI?'● AI 模型潤飾':'● 規則引擎生成'}</span>`+
-    `<span class="badge route">語氣路線：${ROUTE_NAME[rules.route]}</span>`;
-  document.getElementById('repNote').textContent=CONFIG.apiUrl?'按「儲存」會寫入 Google Sheet。':'示範模式：按「儲存」暫存於本機。';
-  const tabs=[['profile','專業檔案'],['radar','現況雷達'],['skill','核心競爭力'],['drive','動機與價值'],['person','性格傾向'],['stage','職涯階段'],['goals','目標與願景'],['mentor','AI Mentor 建議']];
+    `<span class="badge">個人化職涯報告</span>`;
+  document.getElementById('repNote').textContent=CONFIG.apiUrl?'你的測評已自動儲存。':'（示範模式：測評已自動暫存於本機）';
+  const tabs=[['profile','專業檔案'],['radar','職涯滿意度'],['skill','核心競爭力'],['drive','動機與價值'],['person','性格傾向'],['stage','職涯階段'],['goals','目標與願景'],['mentor','AI Mentor 建議']];
   document.getElementById('tabnav').innerHTML=tabs.map((t,i)=>`<button class="${t[0]==='mentor'?'mentor':''} ${i===0?'active':''}" onclick="showTab('${t[0]}',this)">${t[1]}</button>`).join('');
 
   document.getElementById('t_profile').innerHTML=`<div class="cards-g">
@@ -498,15 +521,16 @@ function render(data,sc,rules,gen){
     <div class="stats">
       <div class="stat"><div class="lab">整體滿意度</div><div class="big">${sc.satisfaction}<span class="unit"> /100</span></div></div>
       <div class="stat"><div class="lab">職涯平衡度</div><div class="big">${sc.balance}<span class="unit"> /100</span></div></div>
-      <div class="stat"><div class="lab">最大落差</div><div class="big" style="font-size:1.2rem;padding-top:8px">${sc.radarGaps[0].label}</div></div></div>
+      <div class="stat"><div class="lab">最想改善</div><div class="big" style="font-size:1.2rem;padding-top:8px">${sc.radarGaps[0].label}</div></div></div>
     <div style="display:flex;gap:26px;flex-wrap:wrap;align-items:center">
       <canvas id="radarCv" width="360" height="360"></canvas>
       <div style="flex:1;min-width:260px">
-        <div class="secti warn">優先改善（落差最大）</div>
+        <div class="secti warn">最想改善（重要度高、滿意度低）</div>
         ${sc.radarGaps.slice(0,3).map(d=>`<div class="barline"><b>${d.label}</b><div class="bar warn"><i style="width:${d.gap/9*100}%"></i></div><span class="vv">差 ${d.gap}</span></div>`).join('')}
-        <div class="secti ok">目前相對強項</div>
+        <div class="secti ok">目前相對滿意</div>
         ${sc.strongDims.map(d=>`<div class="barline"><b>${d.label}</b><div class="bar"><i style="width:${d.cur*10}%"></i></div><span class="vv">${d.cur}/10</span></div>`).join('')}
-      </div></div>`;
+      </div></div>
+    <p class="muted" style="margin-top:14px">雷達圖：藍色＝滿意度、綠色＝重要度；當綠線（重要度）明顯在藍線（滿意度）外側，就是最值得優先處理的面向。</p>`;
   radarData=data.radar;drawRadar();
 
   document.getElementById('t_skill').innerHTML=`
@@ -515,19 +539,19 @@ function render(data,sc,rules,gen){
     ${sc.skillsSorted.map(s=>`<div class="barline"><b>${s.label}</b><div class="bar"><i style="width:${s.score*20}%"></i></div><span class="vv">${s.score}/5</span></div>`).join('')}`;
 
   document.getElementById('t_drive').innerHTML=`
-    <div class="secti">職涯錨（內在驅力排序）</div>
+    <div class="secti">你的內在驅力排序</div>
     ${sc.anchorsSorted.map((a,i)=>`<div class="barline"><b>${i===0?'★ ':''}${a.label}</b><div class="bar"><i style="width:${a.score/6*100}%"></i></div><span class="vv">${a.score}/6</span></div>`).join('')}
     <div class="secti ok">工作價值觀（重要度）</div>
     ${sc.valuesSorted.map(v=>{const gap=sc.valueGaps.find(g=>g.k===v.k);return `<div class="barline"><b>${v.label}${gap?' ⚠':''}</b><div class="bar"><i style="width:${v.score/5*100}%"></i></div><span class="vv">${v.score}/5</span></div>`;}).join('')}
-    ${sc.valueGaps.length?`<div class="mentorbox" style="margin-top:12px">⚠ 價值落差：你重視「${sc.valueGaps.map(v=>v.label).join('、')}」，但對應面向滿意度偏低——這是值得關注的調整訊號。</div>`:''}`;
+    ${sc.valueGaps.length?`<div class="mentorbox" style="margin-top:12px">⚠ 你很重視「${sc.valueGaps.map(v=>v.label).join('、')}」，但目前比較少被滿足——這是值得關注的調整訊號。</div>`:''}`;
 
   document.getElementById('t_person').innerHTML=`
-    <p class="muted" style="margin-bottom:10px">Big Five 五大人格傾向（公開量表，僅供自我探索、非臨床評估）。</p>
+    <p class="muted" style="margin-bottom:10px">以下是你的性格傾向，僅供自我探索參考，不是臨床評估。</p>
     ${Object.keys(TRAIT_NAME).map(t=>`<div class="barline"><b>${TRAIT_NAME[t]}</b><div class="bar"><i style="width:${(sc.bigfive[t]-2)/8*100}%"></i></div><span class="vv">${levelTag(sc.bigfiveLevels[t])}</span></div>`).join('')}`;
 
   document.getElementById('t_stage').innerHTML=`
-    <div class="tagrow"><span class="tg" style="font-size:.9rem">目前階段：${STAGE_NAME[sc.stage]}</span><span class="tg" style="background:#fff;border:1px solid var(--line);color:var(--ink-2)">語氣路線：${ROUTE_NAME[rules.route]}</span></div>
-    <div class="secti">職涯適應力 4C</div>
+    <div class="tagrow"><span class="tg" style="font-size:.9rem">目前階段：${STAGE_NAME[sc.stage]}</span></div>
+    <div class="secti">職涯適應力</div>
     ${data.fourc.map(c=>`<div class="barline"><b>${c.label}</b><div class="bar ${c.score<3?'warn':''}"><i style="width:${c.score*20}%"></i></div><span class="vv">${c.score}/5</span></div>`).join('')}
     ${sc.lowC.length?`<div class="mentorbox" style="margin-top:12px">待強化：${sc.lowC.map(c=>c.label).join('、')}。報告下方 AI Mentor 已針對此給建議。</div>`:''}`;
 
@@ -540,9 +564,9 @@ function render(data,sc,rules,gen){
     <div class="timeline">${stages(data).map(st=>`<div class="tstage"><div class="yr">${st.yr}</div><div class="ti">${st.ti}</div><p>${st.body}</p></div>`).join('')}</div>`;
 
   document.getElementById('mentor').innerHTML=`
-    <div class="mentorbox">以下是 AI Mentor 給你的整體回饋，依你的測評分數產生、${gen.usedAI?'並經 AI 模型潤飾':'（示範為規則敘述）'}。語氣路線：<b>${ROUTE_NAME[rules.route]}</b>。</div>
+    <div class="mentorbox">以下是 AI Mentor 根據你的測評，給你的整體回饋。</div>
     <div class="narrative">${gen.narrative}</div>
-    <p class="muted" style="margin-top:14px">本回饋依據 ${gen.ruleIds.filter(id=>id!=='SUM-01').length} 條規則產生；規則對應已記錄於後台供稽核，不在此顯示。</p>`;
+    <p class="muted" style="margin-top:14px">本回饋依你的測評結果生成，僅供職涯探索參考。</p>`;
   window.scrollTo({top:0,behavior:'smooth'});
 }
 function stages(data){const y=new Date().getFullYear();return [
