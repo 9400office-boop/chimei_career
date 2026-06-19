@@ -660,7 +660,7 @@ function render(data,sc,rules,gen){
   const lows=Object.keys(TRAIT_NAME).filter(t=>sc.bigfiveLevels[t]==='low').map(t=>TRAIT_NAME[t]);
   document.getElementById('t_map').innerHTML=`
     <div class="mapband">
-      <div class="mapkicker">${new Date().getFullYear()} 年度 · 個人職涯特輯</div>
+      <div class="mapkicker">${new Date().getFullYear()} 年度 · 個人職涯</div>
       <div class="mapband-name">${p.name}　的職涯地圖</div>
       <div class="mapband-sub">目前階段：${STAGE_NAME[sc.stage]}　·　主導動機：${sc.dominantAnchor.label}</div>
       <div class="mapband-vision">願景：${vision}</div>
