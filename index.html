@@ -1,0 +1,580 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>智能職涯發展系統</title>
+<style>
+:root{
+  --brand:#4F46E5;--brand-700:#4338CA;--brand-50:#EEF0FF;--brand-100:#E0E3FF;
+  --teal:#0D9488;--teal-50:#ECFDF9;
+  --ink:#0F172A;--ink-2:#334155;--muted:#64748B;--muted-2:#94A3B8;
+  --line:#E7EAF1;--line-2:#EEF1F6;--bg:#F6F7FB;--surface:#FFFFFF;
+  --ok:#0D9488;--warn:#D97706;--danger:#DC2626;
+  --r:14px;--r-sm:10px;
+  --sh-sm:0 1px 2px rgba(15,23,42,.05);--sh:0 4px 16px rgba(15,23,42,.06);--sh-lg:0 12px 40px rgba(15,23,42,.10);
+  --font:"Inter",-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"PingFang TC","Noto Sans TC","Microsoft JhengHei",sans-serif;
+}
+*{margin:0;padding:0;box-sizing:border-box;font-family:var(--font)}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--ink);line-height:1.6;-webkit-font-smoothing:antialiased}
+.wrap{max-width:1000px;margin:0 auto;padding:0 20px}
+.appbar{position:sticky;top:0;z-index:50;background:rgba(255,255,255,.82);backdrop-filter:saturate(180%) blur(12px);border-bottom:1px solid var(--line)}
+.appbar .wrap{display:flex;align-items:center;gap:12px;height:62px}
+.logo{width:34px;height:34px;border-radius:9px;background:linear-gradient(135deg,var(--brand),var(--teal));display:flex;align-items:center;justify-content:center;color:#fff;font-weight:800;box-shadow:var(--sh-sm)}
+.appbar h1{font-size:1.02rem;font-weight:700;letter-spacing:-.01em}
+.appbar .tag{font-size:.74rem;color:var(--muted);background:var(--line-2);padding:3px 9px;border-radius:20px}
+.appbar .spacer{flex:1}.appbar .priv{font-size:.74rem;color:var(--muted)}
+.hero{padding:34px 0 6px}
+.hero h2{font-size:1.7rem;font-weight:800;letter-spacing:-.02em;margin-bottom:6px}
+.hero p{color:var(--muted);font-size:.95rem;max-width:660px}
+.stepper{display:flex;margin:24px 0 8px;background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:6px;box-shadow:var(--sh-sm)}
+.step{flex:1;display:flex;align-items:center;justify-content:center;gap:9px;padding:11px 6px;border-radius:var(--r-sm);font-size:.86rem;color:var(--muted);font-weight:600;transition:.25s}
+.step .n{width:22px;height:22px;border-radius:50%;background:var(--line);color:var(--muted);display:flex;align-items:center;justify-content:center;font-size:.78rem;font-weight:700}
+.step.on{background:var(--brand-50);color:var(--brand-700)}.step.on .n{background:var(--brand);color:#fff}
+.step.done .n{background:var(--teal);color:#fff}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);box-shadow:var(--sh-sm);padding:24px 26px;margin:16px 0}
+.card-h{display:flex;align-items:baseline;gap:10px;margin-bottom:4px}
+.card-h .idx{font-size:.74rem;font-weight:800;color:var(--brand);background:var(--brand-50);padding:3px 9px;border-radius:7px}
+.card-h h3{font-size:1.12rem;font-weight:700;letter-spacing:-.01em}
+.card-h .fw{font-size:.72rem;color:var(--teal);background:var(--teal-50);padding:3px 9px;border-radius:7px;font-weight:700}
+.card .desc{color:var(--muted);font-size:.86rem;margin:6px 0 18px}
+label.fld{display:block;font-size:.82rem;font-weight:600;color:var(--ink-2);margin-bottom:6px}
+input[type=text],textarea,select{width:100%;padding:11px 13px;border:1px solid var(--line);border-radius:var(--r-sm);font-size:.92rem;background:#fcfdff;color:var(--ink);transition:.15s}
+input[type=text]:focus,textarea:focus,select:focus{outline:none;border-color:var(--brand);box-shadow:0 0 0 3px var(--brand-100);background:#fff}
+textarea{resize:vertical;min-height:58px;line-height:1.55}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:16px}.grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+.rtable{border:1px solid var(--line-2);border-radius:var(--r-sm);overflow:hidden}
+.rhead,.rrow{display:grid;grid-template-columns:130px 1fr 40px 1fr 40px;gap:12px;align-items:center;padding:10px 14px}
+.rhead{background:var(--line-2);font-size:.7rem;font-weight:700;color:var(--muted);letter-spacing:.04em}
+.rhead div:nth-child(2),.rhead div:nth-child(4){text-align:center}
+.rrow{border-top:1px solid var(--line-2)}.rrow b{font-size:.86rem;font-weight:600}
+.pill{text-align:center;font-weight:700;font-size:.82rem;padding:3px 0;border-radius:7px}
+.pill.cur{color:var(--brand);background:var(--brand-50)}.pill.idl{color:var(--teal);background:var(--teal-50)}
+input[type=range]{-webkit-appearance:none;appearance:none;height:6px;border-radius:6px;background:var(--line);outline:none}
+input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:18px;height:18px;border-radius:50%;background:var(--brand);cursor:pointer;border:3px solid #fff;box-shadow:var(--sh-sm)}
+input[type=range].idl::-webkit-slider-thumb{background:var(--teal)}
+.scale{display:grid;grid-template-columns:1fr 190px 30px;gap:14px;align-items:center;padding:11px 0;border-top:1px solid var(--line-2)}
+.scale:first-child{border-top:none}
+.scale .nm{font-size:.89rem;font-weight:500}.scale .nm small{display:block;color:var(--muted-2);font-size:.74rem;font-weight:400;margin-top:1px}
+.scale .v{text-align:center;font-weight:700;color:var(--brand);font-size:.9rem}
+.legend{font-size:.74rem;color:var(--muted-2);margin-bottom:10px}
+.actions{display:flex;gap:12px;justify-content:flex-end;align-items:center;flex-wrap:wrap}
+.btn{border:none;border-radius:11px;font-size:.92rem;font-weight:700;cursor:pointer;padding:13px 24px;transition:.15s}
+.btn-primary{background:var(--brand);color:#fff;box-shadow:0 6px 18px rgba(79,70,229,.28)}.btn-primary:hover{background:var(--brand-700)}
+.btn-ghost{background:#fff;color:var(--ink-2);border:1px solid var(--line)}.btn-ghost:hover{background:var(--line-2)}
+.note{font-size:.78rem;color:var(--muted);margin-right:auto}
+.confbox{background:var(--line-2);border:1px dashed var(--muted-2);border-radius:var(--r-sm);padding:14px 16px;font-size:.8rem;color:var(--muted);margin-top:12px}
+.confbox b{color:var(--ink-2)}
+#report{display:none;padding-bottom:40px}
+.rephead{background:linear-gradient(135deg,#1E1B4B,#0F766E);color:#fff;border-radius:18px;padding:26px 30px;margin:18px 0;box-shadow:var(--sh-lg);position:relative;overflow:hidden}
+.rephead::after{content:"";position:absolute;right:-40px;top:-40px;width:180px;height:180px;border-radius:50%;background:rgba(255,255,255,.06)}
+.rephead h2{font-size:1.5rem;font-weight:800;margin-bottom:6px}.rephead p{opacity:.9;font-size:.9rem}
+.badges{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
+.badge{font-size:.72rem;font-weight:700;padding:4px 11px;border-radius:20px;background:rgba(255,255,255,.16)}
+.badge.ai{background:#F59E0B;color:#1f1300}.badge.route{background:#fff;color:#1E1B4B}
+.tabnav{display:flex;gap:4px;flex-wrap:wrap;background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:6px;margin-bottom:16px;box-shadow:var(--sh-sm);position:sticky;top:74px;z-index:20}
+.tabnav button{border:none;background:none;padding:9px 14px;border-radius:9px;font-size:.84rem;font-weight:600;color:var(--muted);cursor:pointer;transition:.15s}
+.tabnav button:hover{color:var(--ink);background:var(--line-2)}.tabnav button.active{background:var(--brand);color:#fff}
+.tabnav button.mentor.active{background:#F59E0B;color:#1f1300}
+.tc{display:none;animation:fade .35s}.tc.active{display:block}
+@keyframes fade{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:14px;margin-bottom:18px}
+.stat{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:18px 20px;box-shadow:var(--sh-sm)}
+.stat .lab{font-size:.76rem;color:var(--muted);font-weight:600;margin-bottom:4px}
+.stat .big{font-size:1.85rem;font-weight:800}.stat .unit{font-size:.85rem;color:var(--muted-2);font-weight:600}
+.cards-g{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:14px}
+.kard{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:18px 20px;box-shadow:var(--sh-sm);border-top:3px solid var(--brand)}
+.kard.t2{border-top-color:var(--teal)}.kard.t3{border-top-color:var(--warn)}
+.kard h4{font-size:.98rem;font-weight:700;margin-bottom:7px}.kard p,.kard li{color:var(--ink-2);font-size:.88rem}
+.barline{display:grid;grid-template-columns:128px 1fr 64px;gap:12px;align-items:center;margin:8px 0;font-size:.85rem}
+.barline b{font-weight:600}.bar{height:9px;background:var(--line);border-radius:6px;overflow:hidden}
+.bar i{display:block;height:100%;border-radius:6px;background:linear-gradient(90deg,var(--brand),var(--teal))}
+.bar.warn i{background:linear-gradient(90deg,#FBBF24,#DC2626)}
+.barline .vv{text-align:right;font-weight:700;color:var(--muted);font-size:.8rem}
+.tagrow{display:flex;gap:8px;flex-wrap:wrap;margin:6px 0 14px}
+.tg{font-size:.78rem;font-weight:700;padding:5px 12px;border-radius:20px;background:var(--brand-50);color:var(--brand-700)}
+.tg.lv-high{background:#DCFCE7;color:#166534}.tg.lv-low{background:#FEE2E2;color:#991B1B}.tg.lv-mid{background:var(--line-2);color:var(--ink-2)}
+.tg.warn{background:#FEF3C7;color:#92400E}
+.secti{font-size:.95rem;font-weight:700;margin:18px 0 8px}.secti.warn{color:var(--danger)}.secti.ok{color:var(--teal)}
+.timeline{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:14px}
+.tstage{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:18px;box-shadow:var(--sh-sm);position:relative}
+.tstage .yr{font-size:.78rem;font-weight:800;color:var(--brand)}.tstage .ti{font-size:1.02rem;font-weight:700;margin:4px 0 8px}.tstage p{font-size:.85rem;color:var(--ink-2)}
+.mentorbox{background:#FFFBEB;border:1px solid #FDE68A;border-radius:var(--r);padding:16px 20px;margin:14px 0;color:#78350F;font-size:.9rem}
+.recs{list-style:none;counter-reset:r;margin-top:8px}
+.recs li{position:relative;padding:16px 18px 16px 58px;margin-bottom:11px;background:var(--surface);border:1px solid var(--line);border-radius:var(--r);box-shadow:var(--sh-sm)}
+.recs li::before{counter-increment:r;content:counter(r);position:absolute;left:16px;top:16px;width:28px;height:28px;border-radius:9px;background:linear-gradient(135deg,#F59E0B,#D97706);color:#fff;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:.85rem}
+.recs li .rid{font-size:.66rem;color:var(--muted-2);font-weight:700;letter-spacing:.03em;margin-left:8px}
+.recs li b{color:var(--ink)}.muted{color:var(--muted);font-size:.86rem}
+.narrative{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:24px 26px;box-shadow:var(--sh-sm);font-size:1rem;line-height:2;color:var(--ink-2);text-align:justify}
+.narrative b{color:var(--ink)}
+.kv p{margin-bottom:7px;font-size:.92rem}.kv b{color:var(--ink-2)}
+canvas{max-width:100%;height:auto}
+.toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(80px);background:var(--ink);color:#fff;padding:13px 22px;border-radius:12px;font-size:.88rem;box-shadow:var(--sh-lg);opacity:0;transition:.3s;z-index:99}
+.toast.show{transform:translateX(-50%) translateY(0);opacity:1}
+@media(max-width:720px){.grid2,.grid3{grid-template-columns:1fr}.scale{grid-template-columns:1fr 110px 26px}.rhead,.rrow{grid-template-columns:78px 1fr 30px 1fr 30px;gap:8px;padding:9px}.tabnav{position:static}.stepper{flex-wrap:wrap}.step{flex:1 1 45%}}
+@media print{.appbar,.tabnav,.actions,.stepper{display:none!important}.tc{display:block!important;page-break-inside:avoid}}
+</style>
+</head>
+<body>
+<div class="appbar"><div class="wrap">
+  <div class="logo">職</div><h1>智能職涯發展系統</h1><span class="tag">v3</span>
+  <div class="spacer"></div><div class="priv">🔒 資料僅供院內職涯發展用途</div>
+</div></div>
+
+<div class="wrap">
+<div id="assess">
+  <div class="hero">
+    <h2>職涯發展測評</h2>
+    <p>本測評對應公認職涯框架（職涯滿意度、Schein 職涯錨、O*NET 工作價值、Big Five、Super 生涯階段）。完成後系統以規則引擎產生結論，再由 AI 潤飾成個人化報告。</p>
+    <div class="stepper" id="stepper">
+      <div class="step on" data-s="1"><span class="n">1</span>填寫測評</div>
+      <div class="step" data-s="2"><span class="n">2</span>規則計分</div>
+      <div class="step" data-s="3"><span class="n">3</span>AI 潤飾</div>
+      <div class="step" data-s="4"><span class="n">4</span>產出報告</div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-h"><span class="idx">A</span><h3>專業檔案</h3></div>
+    <div class="grid2">
+      <div><label class="fld">姓名</label><input type="text" id="p_name" placeholder="請輸入姓名"></div>
+      <div><label class="fld">現職</label><input type="text" id="p_role" placeholder="例：教學中心 行政管理員"></div>
+      <div><label class="fld">專業領域 / 專長（逗號分隔）</label><input type="text" id="p_field" placeholder="例：課程設計, 數位教學, 資料分析"></div>
+      <div><label class="fld">投入年資</label><input type="text" id="p_years" placeholder="例：5 年"></div>
+    </div>
+    <div style="margin-top:16px"><label class="fld">一句話背景簡介</label><textarea id="p_bio" placeholder="用一兩句話簡述你的背景與目前關注的方向"></textarea></div>
+  </div>
+
+  <div class="card">
+    <div class="card-h"><span class="idx">B</span><h3>職涯滿意度雷達</h3><span class="fw">工作滿意度面向</span></div>
+    <p class="desc">8 面向，各給「現況」與「理想」（1–10）。規則引擎以此找出優先改善缺口。</p>
+    <div class="rtable"><div class="rhead"><div>面向</div><div>現況</div><div></div><div>理想</div><div></div></div><div id="radarRows"></div></div>
+  </div>
+
+  <div class="card">
+    <div class="card-h"><span class="idx">C</span><h3>職涯動機 · 職涯錨</h3><span class="fw">Schein Career Anchors</span></div>
+    <p class="desc">為每種內在驅力評重要度（1–6）。分數最高者為你的「主導錨」，決定建議方向。</p>
+    <div class="legend">1＝不重要　6＝非常重要</div><div id="anchorRows"></div>
+  </div>
+
+  <div class="card">
+    <div class="card-h"><span class="idx">D</span><h3>工作價值觀</h3><span class="fw">O*NET Work Values</span></div>
+    <p class="desc">評每項價值的重要度（1–5）。重視卻在現況未被滿足者＝價值落差，是轉職關鍵訊號。</p>
+    <div class="legend">1＝不重要　5＝非常重要</div><div id="valueRows"></div>
+  </div>
+
+  <div class="card">
+    <div class="card-h"><span class="idx">E</span><h3>核心能力盤點</h3><span class="fw">可遷移能力</span></div>
+    <p class="desc">為每類能力自評（1–5）。最高 2 項＝招牌優勢；最低項依與目標相關性決定補強或外包。</p>
+    <div class="legend">1＝很弱　5＝很強</div><div id="skillRows"></div>
+  </div>
+
+  <div class="card">
+    <div class="card-h"><span class="idx">F</span><h3>性格傾向</h3><span class="fw">Big Five (OCEAN)</span></div>
+    <p class="desc">10 題，依直覺評分（1＝不符合，5＝很符合）。本量表採公開題庫，非 MBTI。</p>
+    <div class="legend">1＝非常不同意　5＝非常同意</div><div id="bigfiveRows"></div>
+  </div>
+
+  <div class="card">
+    <div class="card-h"><span class="idx">G</span><h3>職涯階段與適應力</h3><span class="fw">Super 階段 + 4C</span></div>
+    <p class="desc">先選你目前的職涯階段，再評四項適應力。低於 3 者會觸發針對性建議。</p>
+    <div style="margin-bottom:14px"><label class="fld">我目前比較像是…</label>
+      <select id="stage">
+        <option value="explore">探索期 — 還在摸索方向、嘗試可能</option>
+        <option value="establish" selected>建立期 — 正在某方向深耕、立足</option>
+        <option value="maintain">維持期 — 已穩定，思考下一步或第二曲線</option>
+        <option value="transition">轉換期 — 正考慮轉職或轉型</option>
+      </select></div>
+    <div class="legend">適應力 4C（1＝低　5＝高）</div><div id="fourcRows"></div>
+  </div>
+
+  <div class="card">
+    <div class="card-h"><span class="idx">H</span><h3>目標與願景</h3><span class="fw">SMART</span></div>
+    <p class="desc">建議寫得具體、含數字與時間，系統會檢查 SMART 完整度並拆解十年願景。</p>
+    <div class="grid3">
+      <div><label class="fld">短期（1 年）</label><textarea id="g_short" placeholder="建議含數字與時間，例：一年內完成 2 場工作坊、培訓 30 人"></textarea></div>
+      <div><label class="fld">中期（2–3 年）</label><textarea id="g_mid" placeholder="例：發表 1 篇研究、建立某項計畫"></textarea></div>
+      <div><label class="fld">長期（4–5 年）</label><textarea id="g_long" placeholder="例：建立某平台 / 成為某領域代表"></textarea></div>
+    </div>
+    <div style="margin-top:16px"><label class="fld">十年願景（一句話）</label><input type="text" id="g_vision" placeholder="用一句話描述十年後理想中的你"></div>
+  </div>
+
+  <div class="card">
+    <div class="actions">
+      <span class="note">完成後按下方按鈕，系統會即時為你生成個人化職涯報告。</span>
+      <button class="btn btn-primary" onclick="run()">生成我的職涯報告 →</button>
+    </div>
+    <div class="confbox"><b>給系統管理者：</b>本頁不含任何 API 金鑰。接上線只需把 Google Apps Script 部署網址填入程式開頭的 <code>CONFIG.apiUrl</code>，金鑰存在 Apps Script 後台（見隨附「上線設定步驟」）。AI Prompt 在 <code>AI_SYSTEM_PROMPT</code> 常數，規則引擎見 <code>RULES</code>／<code>runRules()</code>。</div>
+  </div>
+</div>
+
+<div id="report">
+  <div class="rephead"><h2 id="rTitle"></h2><p id="rVision"></p><div class="badges" id="rBadges"></div></div>
+  <div class="tabnav" id="tabnav"></div>
+  <div class="tc active" id="t_profile"></div>
+  <div class="tc" id="t_radar"></div>
+  <div class="tc" id="t_skill"></div>
+  <div class="tc" id="t_drive"></div>
+  <div class="tc" id="t_person"></div>
+  <div class="tc" id="t_stage"></div>
+  <div class="tc" id="t_goals"></div>
+  <div class="tc" id="mentor"></div>
+  <div class="card"><div class="actions">
+    <span class="note" id="repNote"></span>
+    <button class="btn btn-ghost" onclick="saveSubmission()">儲存我的測評</button>
+    <button class="btn btn-ghost" onclick="backToForm()">← 修改重生成</button>
+    <button class="btn btn-ghost" onclick="window.print()">列印 / PDF</button>
+  </div></div>
+</div>
+</div>
+<div class="toast" id="toast"></div>
+
+<script>
+/* =========================================================================
+   智能職涯發展系統 v3 — 框架化測評 + 規則引擎 + AI 潤飾
+   流程：① 測評 → ② 規則引擎(決定講什麼) → ③ AI 潤飾(決定怎麼講) → ④ 套版
+   ========================================================================= */
+
+/* ---------- 系統設定（前端不放金鑰；金鑰在後端） ---------- */
+const CONFIG = {
+  apiUrl: "https://script.google.com/macros/s/AKfycbx5eF9E35rTwmR_oMf-ARKOMpZi0rDo3ovsb73mLzbTYTamvYN4_YlAiBsv0zjC5vU/exec",   // ★貼上 Google Apps Script 部署後的 /exec 網址；留空＝本地示範模式
+  token:  "chimei-9400",   // 選填：與 Apps Script 設定的 SHARED_TOKEN 相同，多一層保護
+};
+
+/* ---------- ★ AI PROMPT（可直接編輯；正式版應放後端確保一致與安全） ----------
+   重點：規則引擎已決定「講什麼」，LLM 只負責「怎麼講」。 */
+const AI_SYSTEM_PROMPT = `
+你是專業且溫暖的職涯顧問，嚴格遵守以下全域護欄：
+1. 語氣：先肯定優勢，再給建議；鼓勵但不討好，誠實但不批判；繁體中文、口語、好讀。
+2. 不做：不做臨床或心理疾病診斷；不替使用者決定去留/離職；不貼死標籤；不誇大或承諾結果；只提供選項讓使用者自己選。
+3. 須追溯：只能根據「規則引擎提供的結論清單(conclusions)」改寫，不得新增清單以外的建議、不得更動結論、不得編造任何數據。
+4. AI Mentor 呈現：以「一段」連貫敘述（非條列）呈現——先用 1–2 句肯定優勢，再自然帶出 3–4 個最重要的建議（依優先級挑選，不必全列），最後一句鼓勵收尾；總長約 4–6 句。
+5. ★敘述限制：只能把提供的 conclusions 改寫並串接成段落；過場、銜接、開場與收尾句一律不得引入任何新的建議、結論或數據。
+6. 安全：若語氣路線為「穩定優先(A)」或出現耗損訊號，語氣加倍支持，僅提供「找信任的人或院內資源」等一般性建議，不評估風險、不保證。
+7. 標註：性格/階段等結果一律視為「傾向性參考，非定論、非臨床」。
+另輸出一段 3 句的整體摘要(summary)，供報告檔案頁使用。
+輸出 JSON：{ "summary": "三句摘要", "narrative": "一段 Mentor 敘述", "usedRuleIds": ["規則編號…"], "tone": "A|B|C|D|neutral" }
+`;
+/* 送給後端/模型的使用者訊息：畫像 + 語氣路線 + 規則結論清單 */
+function buildLLMPayload(data, sc, route, triggered){
+  return {
+    system: AI_SYSTEM_PROMPT,
+    user: {
+      route,
+      profile: data.profile,
+      scores: { satisfaction:sc.satisfaction, balance:sc.balance,
+        dominantAnchor:sc.dominantAnchor, topValues:sc.topValues,
+        topSkills:sc.topSkills.map(s=>s.label), bigfive:sc.bigfiveLevels, stage:data.stage },
+      goals: data.goals,
+      conclusions: triggered.map(t=>({ruleId:t.id, 結論:t.concl, 建議方向:t.dir}))
+    }
+  };
+}
+
+/* ---------- 題庫（依框架，題目自寫；正式版移後端 DB） ---------- */
+const RADAR_DIMS=[
+ {k:'content',label:'工作內容'},{k:'growth',label:'專業成長'},{k:'supervision',label:'主管/領導'},
+ {k:'coworkers',label:'團隊關係'},{k:'pay',label:'薪酬報酬'},{k:'balance',label:'工作生活平衡'},
+ {k:'culture',label:'組織文化'},{k:'future',label:'職涯前景'}];
+const ANCHORS=[
+ {k:'tech',label:'技術/功能專精',item:'我想在專精領域做到頂尖，勝過被調去管理'},
+ {k:'manage',label:'一般管理',item:'我享受帶人、整合資源、為成敗負責'},
+ {k:'autonomy',label:'自主/獨立',item:'能自由安排工作方式與步調，比頭銜重要'},
+ {k:'security',label:'安全/穩定',item:'我重視穩定、可預期、有保障的工作'},
+ {k:'entrepreneur',label:'創業/創造',item:'我渴望創造屬於自己的東西、開創新局'},
+ {k:'service',label:'服務/奉獻',item:'工作要能幫助他人或對社會有貢獻才有意義'},
+ {k:'challenge',label:'純粹挑戰',item:'我被困難的問題與不可能的任務吸引'},
+ {k:'lifestyle',label:'生活型態',item:'工作必須能配合我的生活與家庭'}];
+const VALUES=[
+ {k:'achievement',label:'成就',facet:'growth',item:'能不斷做出成果、看見成就'},
+ {k:'independence',label:'獨立',facet:'balance',item:'能自主決定怎麼做事'},
+ {k:'recognition',label:'認可',facet:'future',item:'努力能被看見、有發展與地位'},
+ {k:'relationships',label:'關係',facet:'coworkers',item:'與同事相處融洽、能助人'},
+ {k:'support',label:'支持',facet:'supervision',item:'主管公平、組織給予支持'},
+ {k:'conditions',label:'工作條件',facet:'pay',item:'薪酬、安全與環境條件良好'}];
+const SKILLS=[
+ {k:'comm',label:'溝通表達',item:'把複雜資訊講得讓人易懂'},
+ {k:'analysis',label:'分析/問題解決',item:'追問原因、找出結構與根因'},
+ {k:'digital',label:'數位/技術',item:'快速上手工具、善用自動化'},
+ {k:'organize',label:'組織/專案',item:'把混亂的事整理成流程並推動'},
+ {k:'people',label:'人際/協作',item:'凝聚不同人一起完成事情'},
+ {k:'creative',label:'創意/創新',item:'想出不一樣的做法'},
+ {k:'lead',label:'領導/影響',item:'帶動他人、影響決策'},
+ {k:'learn',label:'學習敏捷',item:'快速學會新領域並應用'}];
+/* Big Five：每特質 2 題(1 正向 1 反向)，rev=true 需反向計分 */
+const BIGFIVE=[
+ {t:'O',label:'開放性',item:'我喜歡接觸新觀念、嘗試沒做過的方法',rev:false},
+ {t:'O',label:'開放性',item:'我對抽象或理論性的東西沒什麼興趣',rev:true},
+ {t:'C',label:'嚴謹自律性',item:'我做事有條理、會把任務確實完成',rev:false},
+ {t:'C',label:'嚴謹自律性',item:'我常拖延、難以開始該做的事',rev:true},
+ {t:'E',label:'外向性',item:'我喜歡與人互動、從中獲得能量',rev:false},
+ {t:'E',label:'外向性',item:'我傾向安靜，社交久了會累',rev:true},
+ {t:'A',label:'親和性',item:'我會體諒他人、重視關係和諧',rev:false},
+ {t:'A',label:'親和性',item:'我有時對他人較直接、不太顧及感受',rev:true},
+ {t:'N',label:'神經質',item:'我容易感到焦慮或情緒起伏',rev:false},
+ {t:'N',label:'神經質',item:'我大多時候情緒穩定、不易煩躁',rev:true}];
+const FOURC=[
+ {k:'concern',label:'關注 Concern',item:'我會主動為未來職涯做準備'},
+ {k:'control',label:'控制 Control',item:'我相信職涯主要掌握在自己手中'},
+ {k:'curiosity',label:'好奇 Curiosity',item:'我會主動探索各種可能與機會'},
+ {k:'confidence',label:'信心 Confidence',item:'面對職涯選擇，我相信能處理好'}];
+const TRAIT_NAME={O:'開放性',C:'嚴謹自律性',E:'外向性',A:'親和性',N:'神經質'};
+const STAGE_NAME={explore:'探索期',establish:'建立期',maintain:'維持期',transition:'轉換期'};
+
+/* ---------- 建立表單 ---------- */
+function rangeRow(id,min,max,val){return `<input type="range" min="${min}" max="${max}" value="${val}" id="${id}" oninput="document.getElementById('v_${id}').textContent=this.value"><span class="v" id="v_${id}">${val}</span>`;}
+function buildForm(){
+  document.getElementById('radarRows').innerHTML=RADAR_DIMS.map(d=>`
+    <div class="rrow"><b>${d.label}</b>
+      <input type="range" min="1" max="10" value="5" id="rc_${d.k}" oninput="document.getElementById('vc_${d.k}').textContent=this.value"><span class="pill cur" id="vc_${d.k}">5</span>
+      <input type="range" min="1" max="10" value="8" class="idl" id="ri_${d.k}" oninput="document.getElementById('vi_${d.k}').textContent=this.value"><span class="pill idl" id="vi_${d.k}">8</span></div>`).join('');
+  document.getElementById('anchorRows').innerHTML=ANCHORS.map(a=>`<div class="scale"><span class="nm">${a.label}<small>${a.item}</small></span>${rangeRow('an_'+a.k,1,6,3)}</div>`).join('');
+  document.getElementById('valueRows').innerHTML=VALUES.map(v=>`<div class="scale"><span class="nm">${v.label}<small>${v.item}</small></span>${rangeRow('va_'+v.k,1,5,3)}</div>`).join('');
+  document.getElementById('skillRows').innerHTML=SKILLS.map(s=>`<div class="scale"><span class="nm">${s.label}<small>${s.item}</small></span>${rangeRow('sk_'+s.k,1,5,3)}</div>`).join('');
+  document.getElementById('bigfiveRows').innerHTML=BIGFIVE.map((b,i)=>`<div class="scale"><span class="nm">${b.item}</span>${rangeRow('bf_'+i,1,5,3)}</div>`).join('');
+  document.getElementById('fourcRows').innerHTML=FOURC.map(c=>`<div class="scale"><span class="nm">${c.label}<small>${c.item}</small></span>${rangeRow('fc_'+c.k,1,5,3)}</div>`).join('');
+}
+function setR(id,v){const e=document.getElementById(id);if(!e)return;e.value=v;e.dispatchEvent(new Event('input'));}
+
+/* ---------- ② 計分 ---------- */
+function collect(){
+  const val=id=>document.getElementById(id).value,num=id=>parseInt(document.getElementById(id).value,10);
+  return {
+    profile:{name:val('p_name'),role:val('p_role'),fields:val('p_field').split(/[,，]/).map(s=>s.trim()).filter(Boolean),years:val('p_years'),bio:val('p_bio')},
+    radar:RADAR_DIMS.map(d=>({k:d.k,label:d.label,cur:num('rc_'+d.k),ideal:num('ri_'+d.k),gap:num('ri_'+d.k)-num('rc_'+d.k)})),
+    anchors:ANCHORS.map(a=>({...a,score:num('an_'+a.k)})),
+    values:VALUES.map(v=>({...v,score:num('va_'+v.k)})),
+    skills:SKILLS.map(s=>({...s,score:num('sk_'+s.k)})),
+    bigfive:BIGFIVE.map((b,i)=>({...b,raw:num('bf_'+i)})),
+    stage:document.getElementById('stage').value,
+    fourc:FOURC.map(c=>({...c,score:num('fc_'+c.k)})),
+    goals:{short:val('g_short'),mid:val('g_mid'),long:val('g_long'),vision:val('g_vision')}
+  };
+}
+function score(d){
+  const r=d.radar,avg=r.reduce((s,x)=>s+x.cur,0)/r.length;
+  const sd=Math.sqrt(r.reduce((s,x)=>s+(x.cur-avg)**2,0)/r.length);
+  const anchorsSorted=[...d.anchors].sort((a,b)=>b.score-a.score);
+  const valuesSorted=[...d.values].sort((a,b)=>b.score-a.score);
+  const radarBy=Object.fromEntries(r.map(x=>[x.k,x]));
+  const valueGaps=d.values.filter(v=>v.score>=4 && radarBy[v.facet] && radarBy[v.facet].cur<6);
+  const skillsSorted=[...d.skills].sort((a,b)=>b.score-a.score);
+  // Big Five：每特質兩題（正向 + 反向(6-x)）求和 → 2..10
+  const bf={};BIGFIVE.forEach((b,i)=>{const v=d.bigfive[i].rev?6-d.bigfive[i].raw:d.bigfive[i].raw;bf[b.t]=(bf[b.t]||0)+v;});
+  const bfLevels=Object.fromEntries(Object.keys(bf).map(t=>[t, bf[t]>=8?'high':bf[t]<=4?'low':'mid']));
+  const lowC=d.fourc.filter(c=>c.score<3);
+  const goalText=(d.goals.short+d.goals.mid+d.goals.long);
+  return {
+    satisfaction:Math.round(avg*10),
+    balance:Math.max(0,Math.round((1-sd/4.5)*100)),
+    radarGaps:[...r].sort((a,b)=>b.gap-a.gap),
+    strongDims:[...r].sort((a,b)=>b.cur-a.cur).slice(0,2),
+    anchorsSorted, dominantAnchor:anchorsSorted[0], secondAnchor:anchorsSorted[1],
+    valuesSorted, topValues:valuesSorted.slice(0,2).map(v=>v.label), valueGaps,
+    skillsSorted, topSkills:skillsSorted.slice(0,2), lowSkill:skillsSorted[skillsSorted.length-1],
+    bigfive:bf, bigfiveLevels:bfLevels,
+    stage:d.stage, lowC,
+    smartHasNumber:/\d/.test(goalText)
+  };
+}
+
+/* ---------- 規則引擎（對應規則表 22 條；test→make） ---------- */
+const RULES=[
+ {id:'SUM-01',p:0,test:()=>true,make:(d,s)=>({concl:'整體畫像摘要',dir:'核心優勢+主導動機+首要改善',
+   text:`<b>整體畫像</b>：你的招牌是「${s.topSkills[0].label}」，主導動機是「${s.dominantAnchor.label}」，目前最該優先處理的是「${s.radarGaps[0].label}」。`})},
+ {id:'SAT-01',p:0,test:(d,s)=>s.radarGaps[0].gap>=4,make:(d,s)=>({concl:`${s.radarGaps[0].label} 為優先改善缺口`,dir:'設一個本季可量化小目標',
+   text:`<b>優先處理落差</b>：「${s.radarGaps[0].label}」現況與理想差 ${s.radarGaps[0].gap} 分，是最該投入的面向。先設一個本季可量化的小目標（例如把分數從現在拉高 1–2 分要做的一件事）。`})},
+ {id:'SAT-02',p:0,test:(d,s)=>s.satisfaction<50&&s.balance<60,make:()=>({concl:'處於耗損/失衡風險',dir:'先穩住與自我照顧，暫緩衝刺',
+   text:`<b>先照顧好自己</b>：目前整體滿意度與平衡度都偏低，建議先穩住節奏、降低負荷，暫緩衝刺型目標。若壓力持續，找信任的人或院內資源聊聊會有幫助。`})},
+ {id:'SAT-03',p:2,test:(d,s)=>s.radarGaps.filter(x=>x.cur>=8).length>=5,make:()=>({concl:'整體狀態良好',dir:'設定進階挑戰',
+   text:`<b>把好狀態變成動能</b>：你多數面向都相當滿意，可以開始設定更有挑戰性的進階目標，或擴展你的影響力範圍。`})},
+ {id:'ANC-01',p:1,test:(d,s)=>s.dominantAnchor.k==='autonomy',make:()=>({concl:'偏好彈性與自主',dir:'專案自主型角色，避免高度層級控管',
+   text:`<b>順著「自主」發展</b>：你的主導錨是自主/獨立，傾向能自由安排工作方式的角色（如專案主導、彈性任務），高度層級控管的位置可能讓你綁手綁腳。`})},
+ {id:'ANC-02',p:1,test:(d,s)=>s.dominantAnchor.k==='security',make:()=>({concl:'偏好穩定與可預測',dir:'漸進式發展，避免高風險轉職',
+   text:`<b>穩中求進</b>：你重視安全與穩定，建議用漸進、低風險的方式發展，避免一次性的大跳躍轉職。`})},
+ {id:'ANC-03',p:1,test:(d,s)=>['service','challenge'].includes(s.dominantAnchor.k),make:(d,s)=>({concl:'由意義或挑戰驅動',dir:'選題連結使命或高難度突破',
+   text:`<b>讓「${s.dominantAnchor.label}」帶你選題</b>：挑專案時優先選能連結使命感、或夠有挑戰性的題目，你會更投入也更有產出。`})},
+ {id:'ANC-04',p:2,test:(d,s)=>['manage','entrepreneur'].includes(s.dominantAnchor.k),make:(d,s)=>({concl:'偏好整合與開創',dir:'朝帶人、跨域整合或新計畫主導',
+   text:`<b>往整合與開創走</b>：你的主導錨是「${s.dominantAnchor.label}」，適合朝帶人、跨域整合或主導新計畫發展。`})},
+ {id:'VAL-01',p:0,test:(d,s)=>s.valueGaps.length>0,make:(d,s)=>({concl:`價值落差：${s.valueGaps.map(v=>v.label).join('、')}`,dir:'朝能實現此價值的方向調整或在現職創造空間',
+   text:`<b>注意價值落差</b>：你很重視「${s.valueGaps.map(v=>v.label).join('、')}」，但目前對應面向的滿意度偏低。可以想想：是在現職創造實現它的空間，還是該朝更能滿足它的方向調整？兩條路都先列出來再選。`})},
+ {id:'SKL-01',p:0,test:()=>true,make:(d,s)=>({concl:'招牌優勢',dir:'包裝成作品/方法論放大辨識度',
+   text:`<b>放大招牌能力</b>：你最強的是「${s.topSkills[0].label}」與「${s.topSkills[1].label}」。把它們包裝成可展示的作品或可複製的方法，比補弱點更快建立辨識度。`})},
+ {id:'SKL-02',p:0,test:()=>true,make:(d,s)=>({concl:`最低能力：${s.lowSkill.label}`,dir:'與目標相關則學習，不相關則外包',
+   text:`<b>處理最弱項</b>：目前自評最低的是「${s.lowSkill.label}」。若它和你的長期目標相關，排入學習計畫；若不相關，果斷交給夥伴或外包，不必硬補。`})},
+ {id:'BIG-01',p:2,test:(d,s)=>s.bigfiveLevels.C==='high'&&s.bigfiveLevels.O==='high',make:()=>({concl:'既能落實又能創新',dir:'適合需要結構又要新意的角色',
+   text:`<b>結構＋創新的組合</b>：你同時具備高自律與高開放，很適合那種「要有新意、又要能落地」的角色，例如把創新方案設計成可執行的制度。`})},
+ {id:'BIG-02',p:1,test:(d,s)=>s.bigfiveLevels.N==='high',make:()=>({concl:'情緒敏感、易焦慮',dir:'情緒管理與支持資源；發揮細膩優勢',
+   text:`<b>把敏感化為細膩</b>：你的情緒感受較強，這也代表觀察力細膩。建立一些情緒管理的小習慣與支持來源，能讓這份細膩成為優勢而非負擔。`})},
+ {id:'BIG-03',p:2,test:(d,s)=>s.bigfiveLevels.E==='low'&&s.bigfiveLevels.O==='high',make:()=>({concl:'偏好深度獨立創造',dir:'深度、獨立、創意型工作',
+   text:`<b>深度型工作者</b>：你偏內向又富開放性，適合需要深度思考與獨立創造的工作；社交可以選擇性投入，不必勉強自己變外向。`})},
+ {id:'STG-01',p:1,test:(d,s)=>s.stage==='explore',make:()=>({concl:'探索期',dir:'多方小規模嘗試、蒐集資訊，不急定錨',
+   text:`<b>允許自己探索</b>：你正在探索期，不必急著定下唯一方向。多做幾個小規模嘗試、多蒐集資訊，方向會在嘗試中愈來愈清楚。`})},
+ {id:'STG-02',p:1,test:(d,s)=>s.stage==='establish',make:()=>({concl:'建立期',dir:'聚焦深耕、累積成果與能見度',
+   text:`<b>聚焦深耕</b>：你在建立期，建議選定一個主軸深耕，累積可被看見的成果與作品，把專業立起來。`})},
+ {id:'STG-03',p:1,test:(d,s)=>['maintain','transition'].includes(s.stage),make:(d,s)=>({concl:'維持/轉換期',dir:'盤點可遷移能力、規劃第二曲線',
+   text:`<b>準備第二曲線</b>：你處於${STAGE_NAME[s.stage]}，正適合盤點手上的可遷移能力（你的「${s.topSkills[0].label}」就很好遷移），規劃漸進式的下一步，不必急著一步到位。`})},
+ {id:'STG-04',p:1,test:(d,s)=>s.lowC.length>0,make:(d,s)=>({concl:`適應力待強化：${s.lowC.map(c=>c.label).join('、')}`,dir:'針對該C給小練習',
+   text:`<b>補一點職涯適應力</b>：你在「${s.lowC.map(c=>c.label).join('、')}」分數較低。可以從一個小練習開始，例如每週花 30 分鐘為未來做一件準備、或主動找一位前輩聊聊。`})},
+ {id:'GOAL-01',p:1,test:(d,s)=>!s.smartHasNumber,make:()=>({concl:'目標不夠可衡量',dir:'補上數字指標或完成日期',
+   text:`<b>讓目標可衡量</b>：你的目標還缺少具體數字或時間。試著把「想成長」改成「半年內完成 X、影響 Y 人」，才追蹤得到進度。`})},
+ {id:'GOAL-02',p:1,test:(d,s)=>{const m=({autonomy:'independence',manage:'recognition',service:'relationships',security:'conditions',tech:'achievement',challenge:'achievement',entrepreneur:'achievement',lifestyle:'independence'})[s.dominantAnchor.k];return m && !s.topValues.includes(VALUES.find(v=>v.k===m)?.label) && false;},make:()=>({concl:'目標與動機對齊檢查',dir:'確認非他人期待',text:''})},
+ {id:'DRV-01',p:1,test:(d,s)=>s.dominantAnchor.k==='security'&&s.satisfaction<50,make:()=>({concl:'可能由逃避痛苦驅動',dir:'溫和提醒分辨趨近或逃避',
+   text:`<b>一個溫和的提醒</b>：當「穩定」是主要動力、而現況滿意度又偏低時，值得停下來分辨：你是「想要」這份穩定，還是「害怕」改變？沒有對錯，只是多一個自我覺察的角度。`})},
+];
+function runRules(d,s){
+  const fired=RULES.filter(r=>{try{return r.test(d,s);}catch(e){return false;}}).map(r=>({id:r.id,p:r.p,...r.make(d,s)})).filter(x=>x.text);
+  fired.sort((a,b)=>a.p-b.p);
+  const top=fired.slice(0,8);
+  // 人格路由
+  let route='neutral';
+  if(s.satisfaction<50&&s.balance<60) route='A';
+  else if(['maintain','transition'].includes(s.stage)||s.valueGaps.length>0) route='D';
+  else if(s.stage==='explore') route='C';
+  else if(s.satisfaction>=65&&s.smartHasNumber) route='B';
+  return {triggered:top, route};
+}
+const ROUTE_NAME={A:'穩定優先',B:'成長衝刺',C:'探索定向',D:'轉換準備',neutral:'均衡'};
+
+/* ---------- ③ 生成（後端 LLM 潤飾 or 本地直接用規則文字） ---------- */
+async function generate(data,sc,rules){
+  const ruleIds=rules.triggered.map(t=>t.id);
+  if(CONFIG.apiUrl){
+    try{
+      // 用 text/plain 送出，避開瀏覽器對 Apps Script 的 CORS 預檢
+      const res=await fetch(CONFIG.apiUrl,{method:'POST',headers:{'Content-Type':'text/plain;charset=utf-8'},
+        body:JSON.stringify({action:'generate',token:CONFIG.token,payload:buildLLMPayload(data,sc,rules.route,rules.triggered)})});
+      if(res.ok){const j=await res.json();if(j.narrative)return{usedAI:true,summary:j.summary||'',narrative:j.narrative,ruleIds:j.usedRuleIds||ruleIds};}
+    }catch(e){console.warn('後端生成失敗，改用本地規則敘述',e);}
+  }
+  // 本地：用規則結論直接組成敘述（無 LLM 也完整）
+  const sum=rules.triggered.find(t=>t.id==='SUM-01');
+  return {usedAI:false,
+    summary:sum?sum.text.replace(/<[^>]+>/g,''):'',
+    narrative:localNarrative(data,sc,rules.triggered),
+    ruleIds};
+}
+// 規則結論 → 敘述段落（先肯定 → 3–4 建議 → 鼓勵收尾）；規則編號不出現在文字中
+function stripLead(html){return html.replace(/^<b>[^<]*<\/b>：/,'').replace(/<\/?b>/g,'');}
+function localNarrative(data,sc,triggered){
+  const open=`${data.profile.name}，先說好消息：你的方向感其實滿清楚的。你主要由「${sc.dominantAnchor.label}」這份內在動力驅動，這會是你往前走最穩固的底氣。`;
+  const body=triggered.filter(t=>t.id!=='SUM-01').slice(0,4).map(t=>stripLead(t.text)).join('');
+  const close=`這些都是依你目前分數整理出的建議，不是非做不可的標準答案；挑最有共鳴的一兩個先開始就好。給自己一點時間，你正走在對的路上。`;
+  return open+body+close;
+}
+
+/* ---------- ④ 流程與套版 ---------- */
+let last=null,radarData=null;
+async function run(){
+  const data=collect();
+  if(!data.profile.name.trim()){toast('請先填寫姓名再生成報告');const e=document.getElementById('p_name');e.focus();e.scrollIntoView({behavior:'smooth',block:'center'});return;}
+  setStep(2);
+  const sc=score(data);
+  const rules=runRules(data,sc);setStep(3);
+  const gen=await generate(data,sc,rules);setStep(4);
+  last={data,sc,rules,gen,ts:new Date().toISOString()};
+  render(data,sc,rules,gen);
+}
+function levelTag(t){const lv=t;return `<span class="tg lv-${lv}">${lv==='high'?'偏高':lv==='low'?'偏低':'中等'}</span>`;}
+function render(data,sc,rules,gen){
+  const p=data.profile;
+  document.getElementById('assess').style.display='none';
+  document.getElementById('report').style.display='block';
+  document.getElementById('rTitle').textContent=`${p.name} 的職涯發展報告`;
+  document.getElementById('rVision').textContent='願景：'+data.goals.vision;
+  document.getElementById('rBadges').innerHTML=
+    `<span class="badge ${gen.usedAI?'ai':''}">${gen.usedAI?'● AI 模型潤飾':'● 規則引擎生成'}</span>`+
+    `<span class="badge route">語氣路線：${ROUTE_NAME[rules.route]}</span>`;
+  document.getElementById('repNote').textContent=CONFIG.apiUrl?'按「儲存」會寫入 Google Sheet。':'示範模式：按「儲存」暫存於本機。';
+  const tabs=[['profile','專業檔案'],['radar','現況雷達'],['skill','核心競爭力'],['drive','動機與價值'],['person','性格傾向'],['stage','職涯階段'],['goals','目標與願景'],['mentor','AI Mentor 建議']];
+  document.getElementById('tabnav').innerHTML=tabs.map((t,i)=>`<button class="${t[0]==='mentor'?'mentor':''} ${i===0?'active':''}" onclick="showTab('${t[0]}',this)">${t[1]}</button>`).join('');
+
+  document.getElementById('t_profile').innerHTML=`<div class="cards-g">
+    <div class="kard kv"><h4>基本資料</h4><p><b>姓名：</b>${p.name}</p><p><b>現職：</b>${p.role}</p><p><b>專長：</b>${p.fields.join('、')}</p><p><b>年資：</b>${p.years}</p><p style="margin-top:8px;color:var(--ink-2)">${p.bio}</p></div>
+    <div class="kard t2"><h4>整體摘要</h4><p>${gen.summary||'—'}</p></div></div>`;
+
+  document.getElementById('t_radar').innerHTML=`
+    <div class="stats">
+      <div class="stat"><div class="lab">整體滿意度</div><div class="big">${sc.satisfaction}<span class="unit"> /100</span></div></div>
+      <div class="stat"><div class="lab">職涯平衡度</div><div class="big">${sc.balance}<span class="unit"> /100</span></div></div>
+      <div class="stat"><div class="lab">最大落差</div><div class="big" style="font-size:1.2rem;padding-top:8px">${sc.radarGaps[0].label}</div></div></div>
+    <div style="display:flex;gap:26px;flex-wrap:wrap;align-items:center">
+      <canvas id="radarCv" width="360" height="360"></canvas>
+      <div style="flex:1;min-width:260px">
+        <div class="secti warn">優先改善（落差最大）</div>
+        ${sc.radarGaps.slice(0,3).map(d=>`<div class="barline"><b>${d.label}</b><div class="bar warn"><i style="width:${d.gap/9*100}%"></i></div><span class="vv">差 ${d.gap}</span></div>`).join('')}
+        <div class="secti ok">目前相對強項</div>
+        ${sc.strongDims.map(d=>`<div class="barline"><b>${d.label}</b><div class="bar"><i style="width:${d.cur*10}%"></i></div><span class="vv">${d.cur}/10</span></div>`).join('')}
+      </div></div>`;
+  radarData=data.radar;drawRadar();
+
+  document.getElementById('t_skill').innerHTML=`
+    <div class="secti ok">招牌優勢（最高 2 項）</div><div class="tagrow">${sc.topSkills.map(s=>`<span class="tg">${s.label} · ${s.score}/5</span>`).join('')}</div>
+    <div class="secti">能力全貌</div>
+    ${sc.skillsSorted.map(s=>`<div class="barline"><b>${s.label}</b><div class="bar"><i style="width:${s.score*20}%"></i></div><span class="vv">${s.score}/5</span></div>`).join('')}`;
+
+  document.getElementById('t_drive').innerHTML=`
+    <div class="secti">職涯錨（內在驅力排序）</div>
+    ${sc.anchorsSorted.map((a,i)=>`<div class="barline"><b>${i===0?'★ ':''}${a.label}</b><div class="bar"><i style="width:${a.score/6*100}%"></i></div><span class="vv">${a.score}/6</span></div>`).join('')}
+    <div class="secti ok">工作價值觀（重要度）</div>
+    ${sc.valuesSorted.map(v=>{const gap=sc.valueGaps.find(g=>g.k===v.k);return `<div class="barline"><b>${v.label}${gap?' ⚠':''}</b><div class="bar"><i style="width:${v.score/5*100}%"></i></div><span class="vv">${v.score}/5</span></div>`;}).join('')}
+    ${sc.valueGaps.length?`<div class="mentorbox" style="margin-top:12px">⚠ 價值落差：你重視「${sc.valueGaps.map(v=>v.label).join('、')}」，但對應面向滿意度偏低——這是值得關注的調整訊號。</div>`:''}`;
+
+  document.getElementById('t_person').innerHTML=`
+    <p class="muted" style="margin-bottom:10px">Big Five 五大人格傾向（公開量表，僅供自我探索、非臨床評估）。</p>
+    ${Object.keys(TRAIT_NAME).map(t=>`<div class="barline"><b>${TRAIT_NAME[t]}</b><div class="bar"><i style="width:${(sc.bigfive[t]-2)/8*100}%"></i></div><span class="vv">${levelTag(sc.bigfiveLevels[t])}</span></div>`).join('')}`;
+
+  document.getElementById('t_stage').innerHTML=`
+    <div class="tagrow"><span class="tg" style="font-size:.9rem">目前階段：${STAGE_NAME[sc.stage]}</span><span class="tg" style="background:#fff;border:1px solid var(--line);color:var(--ink-2)">語氣路線：${ROUTE_NAME[rules.route]}</span></div>
+    <div class="secti">職涯適應力 4C</div>
+    ${data.fourc.map(c=>`<div class="barline"><b>${c.label}</b><div class="bar ${c.score<3?'warn':''}"><i style="width:${c.score*20}%"></i></div><span class="vv">${c.score}/5</span></div>`).join('')}
+    ${sc.lowC.length?`<div class="mentorbox" style="margin-top:12px">待強化：${sc.lowC.map(c=>c.label).join('、')}。報告下方 AI Mentor 已針對此給建議。</div>`:''}`;
+
+  document.getElementById('t_goals').innerHTML=`
+    <div class="cards-g">
+      <div class="kard"><h4>短期 · 1 年</h4><p>${data.goals.short||'—'}</p></div>
+      <div class="kard t2"><h4>中期 · 2–3 年</h4><p>${data.goals.mid||'—'}</p></div>
+      <div class="kard t3"><h4>長期 · 4–5 年</h4><p>${data.goals.long||'—'}</p></div></div>
+    <div class="secti">十年願景（自動拆解）</div>
+    <div class="timeline">${stages(data).map(st=>`<div class="tstage"><div class="yr">${st.yr}</div><div class="ti">${st.ti}</div><p>${st.body}</p></div>`).join('')}</div>`;
+
+  document.getElementById('mentor').innerHTML=`
+    <div class="mentorbox">以下是 AI Mentor 給你的整體回饋，依你的測評分數產生、${gen.usedAI?'並經 AI 模型潤飾':'（示範為規則敘述）'}。語氣路線：<b>${ROUTE_NAME[rules.route]}</b>。</div>
+    <div class="narrative">${gen.narrative}</div>
+    <p class="muted" style="margin-top:14px">本回饋依據 ${gen.ruleIds.filter(id=>id!=='SUM-01').length} 條規則產生；規則對應已記錄於後台供稽核，不在此顯示。</p>`;
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+function stages(data){const y=new Date().getFullYear();return [
+  {yr:`${y}–${y+1}`,ti:'啟動期',body:data.goals.short||'建立專業聲量與作品'},
+  {yr:`${y+1}–${y+3}`,ti:'躍升期',body:data.goals.mid||'轉型為創新設計者'},
+  {yr:`${y+3}–${y+5}`,ti:'拓展期',body:data.goals.long||'從執行者擴展為影響者'},
+  {yr:`${y+5}–${y+10}`,ti:'影響期',body:data.goals.vision||'成為領域核心人物'}];}
+function showTab(t,el){document.querySelectorAll('.tabnav button').forEach(x=>x.classList.remove('active'));document.querySelectorAll('.tc').forEach(x=>x.classList.remove('active'));el.classList.add('active');document.getElementById(t==='mentor'?'mentor':'t_'+t).classList.add('active');window.scrollTo({top:0,behavior:'smooth'});}
+function backToForm(){document.getElementById('report').style.display='none';document.getElementById('assess').style.display='block';setStep(1);window.scrollTo({top:0,behavior:'smooth'});}
+function setStep(s){document.querySelectorAll('#stepper .step').forEach(x=>{const n=+x.dataset.s;x.classList.toggle('done',n<s);x.classList.toggle('on',n===s);});}
+
+async function saveSubmission(){
+  if(!last){toast('請先生成報告');return;}
+  const rec={user:last.data.profile.name,role:last.data.profile.role,submittedAt:last.ts,data:last.data,scores:last.sc,route:last.rules.route,
+    mentor:{narrative:last.gen.narrative, ruleIds:last.gen.ruleIds}};  // 規則編號留後台供稽核，不顯示給使用者
+  if(CONFIG.apiUrl){try{const res=await fetch(CONFIG.apiUrl,{method:'POST',headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify({action:'submit',token:CONFIG.token,record:rec})});toast(res.ok?'已儲存至 Google Sheet ✓':'儲存失敗');}catch(e){toast('連線失敗');}}
+  else{try{const a=JSON.parse(localStorage.getItem('career_v3')||'[]');a.push(rec);localStorage.setItem('career_v3',JSON.stringify(a));toast('示範模式：已暫存於本機 ✓');}catch(e){toast('本機儲存失敗');}}
+}
+function toast(m){const t=document.getElementById('toast');t.textContent=m;t.classList.add('show');clearTimeout(t._t);t._t=setTimeout(()=>t.classList.remove('show'),2600);}
+
+function drawRadar(){
+  const cv=document.getElementById('radarCv');if(!cv||!radarData)return;
+  const dpr=window.devicePixelRatio||1,size=360;cv.width=size*dpr;cv.height=size*dpr;cv.style.width=size+'px';cv.style.height=size+'px';
+  const ctx=cv.getContext('2d');ctx.scale(dpr,dpr);const cx=size/2,cy=size/2,R=120,n=radarData.length;
+  ctx.clearRect(0,0,size,size);
+  for(let g=1;g<=5;g++){ctx.beginPath();for(let i=0;i<n;i++){const a=-Math.PI/2+i*2*Math.PI/n,r=R*g/5,x=cx+r*Math.cos(a),y=cy+r*Math.sin(a);i?ctx.lineTo(x,y):ctx.moveTo(x,y);}ctx.closePath();ctx.strokeStyle='#EAEDF4';ctx.stroke();}
+  ctx.fillStyle='#64748B';ctx.font='600 11px Inter,sans-serif';ctx.textAlign='center';ctx.textBaseline='middle';
+  for(let i=0;i<n;i++){const a=-Math.PI/2+i*2*Math.PI/n,x=cx+R*Math.cos(a),y=cy+R*Math.sin(a);ctx.beginPath();ctx.moveTo(cx,cy);ctx.lineTo(x,y);ctx.strokeStyle='#F1F4F9';ctx.stroke();ctx.fillText(radarData[i].label,cx+(R+22)*Math.cos(a),cy+(R+16)*Math.sin(a));}
+  const poly=(key,st,fl)=>{ctx.beginPath();for(let i=0;i<n;i++){const a=-Math.PI/2+i*2*Math.PI/n,r=R*radarData[i][key]/10,x=cx+r*Math.cos(a),y=cy+r*Math.sin(a);i?ctx.lineTo(x,y):ctx.moveTo(x,y);}ctx.closePath();ctx.fillStyle=fl;ctx.fill();ctx.strokeStyle=st;ctx.lineWidth=2;ctx.stroke();};
+  poly('ideal','#0D9488','rgba(13,148,136,.12)');poly('cur','#4F46E5','rgba(79,70,229,.18)');
+}
+buildForm();
+</script>
+</body>
+</html>
