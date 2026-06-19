@@ -474,8 +474,14 @@ async function generate(data,sc,rules){
       // 用 text/plain 送出，避開瀏覽器對 Apps Script 的 CORS 預檢
       const res=await fetch(CONFIG.apiUrl,{method:'POST',headers:{'Content-Type':'text/plain;charset=utf-8'},
         body:JSON.stringify({action:'generate',token:CONFIG.token,payload:buildLLMPayload(data,sc,rules.route,rules.triggered)})});
-      if(res.ok){const j=await res.json();if(j.narrative)return{usedAI:true,summary:j.summary||'',narrative:j.narrative,ruleIds:j.usedRuleIds||ruleIds};}
-    }catch(e){console.warn('後端生成失敗，改用本地規則敘述',e);}
+      const raw=await res.text();
+      let j=null; try{ j=JSON.parse(raw); }catch(_){}
+      if(j&&j.narrative) return {usedAI:true,summary:j.summary||'',narrative:j.narrative,ruleIds:j.usedRuleIds||ruleIds};
+      // 後端有回應但不是預期格式 → 把原因顯示出來方便除錯（不靜默掉）
+      const reason=(j&&j.error)?(j.error+(j.detail?(' / '+JSON.stringify(j.detail).slice(0,240)):'')):('HTTP '+res.status+'：'+raw.slice(0,200));
+      window.__backendDebug=reason; console.warn('[後端未回傳 AI 結果]',reason,j||raw);
+      toast('AI 未接上：'+reason.slice(0,90));
+    }catch(e){ window.__backendDebug=String(e); console.warn('[後端連線失敗]',e); toast('AI 連線失敗：'+(e.message||e)); }
   }
   // 本地：用規則結論直接組成敘述（無 LLM 也完整）
   const sum=rules.triggered.find(t=>t.id==='SUM-01');
