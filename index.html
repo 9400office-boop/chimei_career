@@ -6,11 +6,12 @@
 <title>智能職涯發展系統</title>
 <style>
 :root{
-  --brand:#4F46E5;--brand-700:#4338CA;--brand-50:#EEF0FF;--brand-100:#E0E3FF;
-  --teal:#0D9488;--teal-50:#ECFDF9;
-  --ink:#0F172A;--ink-2:#334155;--muted:#64748B;--muted-2:#94A3B8;
-  --line:#E7EAF1;--line-2:#EEF1F6;--bg:#F6F7FB;--surface:#FFFFFF;
-  --ok:#0D9488;--warn:#D97706;--danger:#DC2626;
+  --brand:#1E3A8A;--brand-700:#152A66;--brand-50:#EAF0FB;--brand-100:#CBDBF3;
+  --teal:#0E8E7F;--teal-50:#E4F5F1;
+  --accent:#E8743B;--accent-50:#FCEDE4;
+  --ink:#1B2A3A;--ink-2:#3A4A5C;--muted:#697586;--muted-2:#9AA6B2;
+  --line:#E3E8EF;--line-2:#EEF2F7;--bg:#F3F6FA;--surface:#FFFFFF;
+  --ok:#0E8E7F;--warn:#D97706;--danger:#DC2626;
   --r:14px;--r-sm:10px;
   --sh-sm:0 1px 2px rgba(15,23,42,.05);--sh:0 4px 16px rgba(15,23,42,.06);--sh-lg:0 12px 40px rgba(15,23,42,.10);
   --font:"Inter",-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"PingFang TC","Noto Sans TC","Microsoft JhengHei",sans-serif;
@@ -18,7 +19,7 @@
 *{margin:0;padding:0;box-sizing:border-box;font-family:var(--font)}
 html{scroll-behavior:smooth}
 body{background:var(--bg);color:var(--ink);line-height:1.6;-webkit-font-smoothing:antialiased}
-.wrap{max-width:1000px;margin:0 auto;padding:0 20px}
+.wrap{max-width:1280px;margin:0 auto;padding:0 24px}
 .appbar{position:sticky;top:0;z-index:50;background:rgba(255,255,255,.82);backdrop-filter:saturate(180%) blur(12px);border-bottom:1px solid var(--line)}
 .appbar .wrap{display:flex;align-items:center;gap:12px;height:62px}
 .logo{width:34px;height:34px;border-radius:9px;background:linear-gradient(135deg,var(--brand),var(--teal));display:flex;align-items:center;justify-content:center;color:#fff;font-weight:800;box-shadow:var(--sh-sm)}
@@ -123,12 +124,111 @@ input[type=range].idl::-webkit-slider-thumb{background:var(--teal)}
 .recs li b{color:var(--ink)}.muted{color:var(--muted);font-size:.86rem}
 .narrative{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:24px 26px;box-shadow:var(--sh-sm);font-size:1rem;line-height:2;color:var(--ink-2);text-align:justify}
 .narrative b{color:var(--ink)}
+.mapband{background:linear-gradient(135deg,#1E1B4B,#0F766E);color:#fff;border-radius:16px;padding:22px 26px;box-shadow:var(--sh-lg);margin-bottom:16px;position:relative;overflow:hidden}
+.mapband::after{content:"";position:absolute;right:-30px;top:-30px;width:150px;height:150px;border-radius:50%;background:rgba(255,255,255,.06)}
+.mapband-name{font-size:1.4rem;font-weight:800}
+.mapband-sub{opacity:.92;font-size:.92rem;margin-top:4px}
+.mapband-vision{opacity:.9;font-size:.86rem;margin-top:10px;border-top:1px solid rgba(255,255,255,.22);padding-top:9px}
+.mapgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+.maptile{background:var(--surface);border:1px solid var(--line);border-top:3px solid var(--brand);border-radius:14px;padding:16px 18px;box-shadow:var(--sh-sm);min-height:108px}
+.mt-k{font-size:.78rem;color:var(--muted);font-weight:700;margin-bottom:7px}
+.mt-v{font-size:1.12rem;font-weight:800;line-height:1.3}
+.mt-v.num{font-size:1.7rem}
+.mt-v .u{font-size:.9rem;color:var(--muted-2);font-weight:600}
+.mt-s{font-size:.8rem;color:var(--ink-2);margin-top:7px}
+@media(max-width:720px){.mapgrid{grid-template-columns:1fr 1fr}}
 .kv p{margin-bottom:7px;font-size:.92rem}.kv b{color:var(--ink-2)}
 canvas{max-width:100%;height:auto}
 .toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(80px);background:var(--ink);color:#fff;padding:13px 22px;border-radius:12px;font-size:.88rem;box-shadow:var(--sh-lg);opacity:0;transition:.3s;z-index:99}
 .toast.show{transform:translateX(-50%) translateY(0);opacity:1}
 @media(max-width:720px){.grid2,.grid3{grid-template-columns:1fr}.scale{grid-template-columns:1fr 110px 26px}.rhead,.rrow{grid-template-columns:78px 1fr 30px 1fr 30px;gap:8px;padding:9px}.tabnav{position:static}.stepper{flex-wrap:wrap}.step{flex:1 1 45%}}
-@media print{.appbar,.tabnav,.actions,.stepper{display:none!important}.tc{display:block!important;page-break-inside:avoid}}
+@media print{
+  .appbar,.tabnav,.actions,.stepper{display:none!important}
+  .report-body{display:block!important}        /* 列印時把左右欄改單欄，避免 flex 塌掉變空白 */
+  .report-main{width:100%!important;display:block!important}
+  #report{max-width:100%!important}
+  .tc{display:block!important;page-break-inside:avoid;margin-bottom:18px}
+  .mapband,.rephead{-webkit-print-color-adjust:exact;print-color-adjust:exact}
+}
+.loading{position:fixed;inset:0;background:rgba(255,255,255,.93);backdrop-filter:blur(2px);display:none;flex-direction:column;align-items:center;justify-content:center;gap:18px;z-index:200}
+.loading.show{display:flex}
+.loading p{color:var(--ink-2);font-size:.96rem;font-weight:600}
+.loading .spin{width:48px;height:48px;border:4px solid var(--line);border-top-color:var(--teal);border-radius:50%;animation:spin .9s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+/* ============================================================
+   報告：雜誌 / 編輯風主題（只影響 #report，問卷不受影響）
+   ============================================================ */
+:root{ --serif:"Noto Serif TC","Source Han Serif TC","Songti TC","SimSun",serif; }
+#report{ max-width:100%; margin:0 auto; }
+#assess{ max-width:1040px; margin:0 auto; }
+/* 報告抬頭 → 輕量編輯式刊頭 */
+#report .rephead{ background:#fff; color:var(--ink); border-radius:0; border-bottom:2px solid var(--ink); padding:20px 2px 14px; box-shadow:none; }
+#report .rephead::after{ display:none; }
+#report .rephead::before{ content:"個 人 職 涯 特 輯"; display:block; font-size:.7rem; letter-spacing:.4em; color:var(--muted); font-weight:700; margin-bottom:8px; }
+#report .rephead h2{ font-family:var(--serif); font-size:2rem; font-weight:800; letter-spacing:.02em; }
+#report .rephead p{ color:var(--muted); }
+#report .badges{ display:none; }
+/* 分頁導覽 → 編輯感 */
+#report .tabnav button{ letter-spacing:.05em; font-weight:700; }
+/* 職涯地圖 → 雜誌封面 */
+.mapband{ background:linear-gradient(150deg,#14131c,#0f3b39); padding:42px 36px; border-radius:18px; }
+.mapkicker{ font-size:.72rem; letter-spacing:.4em; color:#9aa6ff; font-weight:800; margin-bottom:14px; }
+.mapband-name{ font-family:var(--serif); font-size:2.3rem; letter-spacing:.03em; line-height:1.15; }
+.mapband-sub,.mapband-vision{ font-family:var(--serif); }
+.mapband-vision{ font-style:italic; }
+.maptile{ border-radius:4px; }
+.mt-k{ letter-spacing:.12em; }
+.mt-v{ font-family:var(--serif); }
+/* 區塊標題 → 編輯式分隔線 */
+#report .secti{ font-family:var(--serif); font-size:1.08rem; display:flex; align-items:center; gap:14px; }
+#report .secti::after{ content:""; flex:1; height:1px; background:var(--line); }
+/* 報告各分頁標題（h2 若有） */
+#report .tc h2{ font-family:var(--serif); letter-spacing:.02em; }
+/* AI Mentor → 專題文章：襯線、寬行距、首字放大 */
+#report .narrative{ font-family:var(--serif); font-size:1.08rem; line-height:2.1; background:transparent; border:none; box-shadow:none; padding:6px 0 4px; }
+#report .narrative::first-letter{ font-family:var(--serif); font-size:3.6rem; font-weight:800; float:left; line-height:.86; margin:8px 12px 0 0; color:var(--brand); }
+@media print{ .mapband{ -webkit-print-color-adjust:exact; print-color-adjust:exact; } }
+
+/* ============================================================
+   報告版面：左側導覽 + 中間完整內容
+   ============================================================ */
+.report-body{ display:flex; gap:26px; align-items:flex-start; }
+.report-body .tabnav{ flex-direction:column; flex-wrap:nowrap; width:190px; flex-shrink:0; gap:4px; padding:8px; position:sticky; top:74px; align-self:flex-start; }
+.report-body .tabnav button{ text-align:left; width:100%; }
+.report-main{ flex:1; min-width:0; }
+@media(max-width:760px){ .report-body{ flex-direction:column; } .report-body .tabnav{ flex-direction:row; flex-wrap:wrap; width:auto; position:static; } }
+
+/* ============================================================
+   黑 / 黃 / 灰 / 白：對比與重點微調
+   ============================================================ */
+.logo{ background:linear-gradient(135deg,var(--brand),var(--teal)); color:#fff; }
+.report-body .tabnav button.active{ background:linear-gradient(135deg,var(--brand),var(--teal)); color:#fff; box-shadow:inset 3px 0 0 var(--accent); }
+.report-body .tabnav button.mentor.active{ background:var(--accent); color:#fff; box-shadow:none; }
+.bar i{ background:linear-gradient(90deg,var(--brand),var(--teal)); }
+#report .secti.ok{ color:var(--teal); }
+#report .narrative::first-letter{ color:var(--accent); }
+.btnscale.idl .sbtn.sel{ background:var(--teal); border-color:var(--teal); color:#fff; }
+.qtag.idl{ color:var(--teal); }
+.tg{ background:var(--brand-50); color:var(--brand-700); }
+.mapkicker{ color:var(--accent); }
+.stat .big{ color:var(--brand); }
+
+/* ============================================================
+   兩大區塊重新設計（黑黃灰白 · 編輯感）
+   ============================================================ */
+/* 區塊一：報告刊頭 → 編輯式 masthead（不再全白） */
+#report .rephead{ position:relative; overflow:hidden; background:linear-gradient(120deg,var(--brand) 0%,var(--teal) 100%); color:#fff; padding:28px 30px 24px; border-radius:14px; border:none; box-shadow:var(--sh); }
+#report .rephead::before{ content:"個人職涯特輯"; display:inline-block; background:rgba(255,255,255,.16); color:#fff; font-size:.68rem; letter-spacing:.28em; font-weight:800; padding:6px 13px; border-radius:20px; margin-bottom:14px; }
+#report .rephead::after{ content:""; position:absolute; right:-50px; top:-50px; width:200px; height:200px; border-radius:50%; background:rgba(255,255,255,.08); }
+#report .rephead h2{ font-family:var(--serif); color:#fff; font-size:2.1rem; display:inline-block; border-bottom:5px solid var(--accent); padding-bottom:4px; line-height:1.25; }
+#report .rephead p{ color:rgba(255,255,255,.9); margin-top:12px; }
+
+/* 區塊二：職涯地圖封面 → 藍綠漸層＋橘色側條與暖光 */
+.mapband{ background:linear-gradient(125deg,#1A3478 0%,#0C7567 100%); border-left:7px solid var(--accent); }
+.mapband::after{ content:""; position:absolute; right:-50px; top:-50px; width:240px; height:240px; border-radius:50%; background:radial-gradient(circle, rgba(255,255,255,.12), rgba(255,255,255,0) 70%); }
+.mapband-name{ position:relative; }
+.mapband-vision{ border-top:1px solid rgba(255,255,255,.3); }
 </style>
 </head>
 <body>
@@ -207,7 +307,7 @@ canvas{max-width:100%;height:auto}
       <div><label class="fld">中期（2–3 年）</label><textarea id="g_mid" placeholder="例：發表 1 篇研究、建立某項計畫"></textarea></div>
       <div><label class="fld">長期（4–5 年）</label><textarea id="g_long" placeholder="例：建立某平台 / 成為某領域代表"></textarea></div>
     </div>
-    <div style="margin-top:16px"><label class="fld">十年願景（一句話）</label><input type="text" id="g_vision" placeholder="用一句話描述十年後理想中的你"></div>
+    <div style="margin-top:16px"><label class="fld">十年願景（可留空，系統會依你的測評自動生成）</label><input type="text" id="g_vision" placeholder="想自己寫也可以；留空的話，系統會幫你產生一句願景"></div>
   </div>
 
   <div class="card">
@@ -220,23 +320,24 @@ canvas{max-width:100%;height:auto}
 
 <div id="report">
   <div class="rephead"><h2 id="rTitle"></h2><p id="rVision"></p><div class="badges" id="rBadges"></div></div>
-  <div class="tabnav" id="tabnav"></div>
-  <div class="tc active" id="t_profile"></div>
-  <div class="tc" id="t_radar"></div>
-  <div class="tc" id="t_skill"></div>
-  <div class="tc" id="t_drive"></div>
-  <div class="tc" id="t_person"></div>
-  <div class="tc" id="t_stage"></div>
-  <div class="tc" id="t_goals"></div>
-  <div class="tc" id="mentor"></div>
-  <div class="card"><div class="actions">
-    <span class="note" id="repNote"></span>
-    <button class="btn btn-ghost" onclick="backToForm()">← 修改重生成</button>
-    <button class="btn btn-ghost" onclick="window.print()">列印 / PDF</button>
-  </div></div>
+  <div class="report-body">
+    <div class="tabnav" id="tabnav"></div>
+    <div class="report-main">
+      <div class="tc active" id="t_map"></div>
+      <div class="tc" id="t_profile"></div>
+      <div class="tc" id="t_radar"></div>
+      <div class="tc" id="t_skill"></div>
+      <div class="tc" id="t_drive"></div>
+      <div class="tc" id="t_person"></div>
+      <div class="tc" id="t_stage"></div>
+      <div class="tc" id="t_goals"></div>
+      <div class="tc" id="mentor"></div>
+    </div>
+  </div>
 </div>
 </div>
 <div class="toast" id="toast"></div>
+<div class="loading" id="loading"><div class="spin"></div><p>AI 正在分析你的測評，整理個人化建議中…</p></div>
 
 <script>
 /* =========================================================================
@@ -476,7 +577,9 @@ async function generate(data,sc,rules){
         body:JSON.stringify({action:'generate',token:CONFIG.token,payload:buildLLMPayload(data,sc,rules.route,rules.triggered)})});
       const raw=await res.text();
       let j=null; try{ j=JSON.parse(raw); }catch(_){}
-      if(j&&j.narrative) return {usedAI:true,summary:j.summary||'',narrative:j.narrative,ruleIds:j.usedRuleIds||ruleIds};
+      if(j&&j.narrative) return {usedAI:true,summary:j.summary||'',narrative:j.narrative,
+        sections:(j.sections&&Object.keys(j.sections).length)?j.sections:buildSections(rules.triggered),
+        ruleIds:j.usedRuleIds||ruleIds};
       // 後端有回應但不是預期格式 → 把原因顯示出來方便除錯（不靜默掉）
       const reason=(j&&j.error)?(j.error+(j.detail?(' / '+JSON.stringify(j.detail).slice(0,240)):'')):('HTTP '+res.status+'：'+raw.slice(0,200));
       window.__backendDebug=reason; console.warn('[後端未回傳 AI 結果]',reason,j||raw);
@@ -488,10 +591,20 @@ async function generate(data,sc,rules){
   return {usedAI:false,
     summary:sum?sum.text.replace(/<[^>]+>/g,''):'',
     narrative:localNarrative(data,sc,rules.triggered),
+    sections:buildSections(rules.triggered),
     ruleIds};
 }
 // 規則結論 → 敘述段落（先肯定 → 3–4 建議 → 鼓勵收尾）；規則編號不出現在文字中
 function stripLead(html){return html.replace(/^<b>[^<]*<\/b>：/,'').replace(/<\/?b>/g,'');}
+// 把觸發的規則依模組分到各分頁，作為「每項的建議」
+function buildSections(triggered){
+  const map={SAT:'radar',SKL:'skill',ANC:'drive',VAL:'drive',DRV:'drive',BIG:'person',STG:'stage',GOAL:'goals'};
+  const out={};
+  triggered.forEach(t=>{ if(t.id==='SUM-01')return; const sec=map[t.id.split('-')[0]]; if(!sec)return; (out[sec]=out[sec]||[]).push(stripLead(t.text)); });
+  Object.keys(out).forEach(k=>out[k]=out[k].join(''));
+  return out;
+}
+function secAdvice(gen,key){ return (gen.sections&&gen.sections[key]) ? `<div class="mentorbox" style="margin-top:14px"><b>給你的建議：</b>${gen.sections[key]}</div>` : ''; }
 function localNarrative(data,sc,triggered){
   const open=`${data.profile.name}，先說好消息：你的方向感其實滿清楚的。你主要由「${sc.dominantAnchor.label}」這份內在動力驅動，這會是你往前走最穩固的底氣。`;
   const body=triggered.filter(t=>t.id!=='SUM-01').slice(0,4).map(t=>stripLead(t.text)).join('');
@@ -504,26 +617,58 @@ let last=null,radarData=null;
 async function run(){
   const data=collect();
   if(!data.profile.name.trim()){toast('請先填寫姓名再生成報告');const e=document.getElementById('p_name');e.focus();e.scrollIntoView({behavior:'smooth',block:'center'});return;}
-  setStep(2);
-  const sc=score(data);
-  const rules=runRules(data,sc);setStep(3);
-  const gen=await generate(data,sc,rules);setStep(4);
-  last={data,sc,rules,gen,ts:new Date().toISOString()};
-  render(data,sc,rules,gen);
-  saveSubmission();   // 生成報告時自動儲存，使用者不需另外按按鈕
+  showLoading(true);            // 顯示「生成中」動畫，避免等 AI 時像當機
+  try{
+    setStep(2);
+    const sc=score(data);
+    const rules=runRules(data,sc);setStep(3);
+    const gen=await generate(data,sc,rules);setStep(4);
+    last={data,sc,rules,gen,ts:new Date().toISOString()};
+    render(data,sc,rules,gen);
+    saveSubmission();           // 生成報告時自動儲存，使用者不需另外按按鈕
+  } finally { showLoading(false); }
+}
+function showLoading(b){ const el=document.getElementById('loading'); if(el) el.classList.toggle('show',b); }
+// 依測評結果生成「願景」：使用者沒填就由系統推導，而非空白
+function deriveVision(data,sc){
+  if(data.goals.vision && data.goals.vision.trim()) return data.goals.vision.trim();
+  const aim={tech:'成為該領域備受信賴的專業者',manage:'帶領團隊、整合資源創造影響力',autonomy:'打造能高度自主發揮的工作模式',security:'在穩定中穩健累積專業與資歷',entrepreneur:'開創屬於自己的事業或新局',service:'用專業為他人與社會帶來正向改變',challenge:'持續挑戰更高難度、不斷突破自我',lifestyle:'在事業與生活之間取得理想平衡'}[sc.dominantAnchor.k]||'活出自己重視的職涯樣貌';
+  const lg=(data.goals.long||'').trim();
+  return `以「${sc.topSkills[0].label}」為核心優勢，${aim}${lg?('，並逐步實現「'+lg+'」'):''}。`;
 }
 function levelTag(t){const lv=t;return `<span class="tg lv-${lv}">${lv==='high'?'偏高':lv==='low'?'偏低':'中等'}</span>`;}
 function render(data,sc,rules,gen){
   const p=data.profile;
   document.getElementById('assess').style.display='none';
   document.getElementById('report').style.display='block';
+  document.querySelectorAll('.tc').forEach(x=>x.classList.remove('active'));
+  document.getElementById('t_map').classList.add('active');  // 每次都從職涯地圖開始看
+  const vision=deriveVision(data,sc);
   document.getElementById('rTitle').textContent=`${p.name} 的職涯發展報告`;
-  document.getElementById('rVision').textContent='願景：'+data.goals.vision;
+  document.getElementById('rVision').textContent='願景：'+vision;
   document.getElementById('rBadges').innerHTML=
     `<span class="badge">個人化職涯報告</span>`;
-  document.getElementById('repNote').textContent=CONFIG.apiUrl?'你的測評已自動儲存。':'（示範模式：測評已自動暫存於本機）';
-  const tabs=[['profile','專業檔案'],['radar','職涯滿意度'],['skill','核心競爭力'],['drive','動機與價值'],['person','性格傾向'],['stage','職涯階段'],['goals','目標與願景'],['mentor','AI Mentor 建議']];
+  const tabs=[['map','職涯地圖'],['profile','專業檔案'],['radar','職涯滿意度'],['skill','核心競爭力'],['drive','動機與價值'],['person','性格傾向'],['stage','職涯階段'],['goals','目標與願景'],['mentor','AI Mentor 建議']];
   document.getElementById('tabnav').innerHTML=tabs.map((t,i)=>`<button class="${t[0]==='mentor'?'mentor':''} ${i===0?'active':''}" onclick="showTab('${t[0]}',this)">${t[1]}</button>`).join('');
+
+  const highs=Object.keys(TRAIT_NAME).filter(t=>sc.bigfiveLevels[t]==='high').map(t=>TRAIT_NAME[t]);
+  const lows=Object.keys(TRAIT_NAME).filter(t=>sc.bigfiveLevels[t]==='low').map(t=>TRAIT_NAME[t]);
+  document.getElementById('t_map').innerHTML=`
+    <div class="mapband">
+      <div class="mapkicker">${new Date().getFullYear()} 年度 · 個人職涯特輯</div>
+      <div class="mapband-name">${p.name}　的職涯地圖</div>
+      <div class="mapband-sub">目前階段：${STAGE_NAME[sc.stage]}　·　主導動機：${sc.dominantAnchor.label}</div>
+      <div class="mapband-vision">願景：${vision}</div>
+    </div>
+    <div class="mapgrid">
+      <div class="maptile" style="border-top-color:var(--brand)"><div class="mt-k">職涯滿意度</div><div class="mt-v num">${sc.satisfaction}<span class="u"> /100</span></div><div class="mt-s">最想改善：${sc.radarGaps[0].label}</div></div>
+      <div class="maptile" style="border-top-color:var(--teal)"><div class="mt-k">主導動機</div><div class="mt-v">${sc.dominantAnchor.label}</div><div class="mt-s">你最主要的內在驅力</div></div>
+      <div class="maptile" style="border-top-color:var(--accent)"><div class="mt-k">招牌優勢</div><div class="mt-v">${sc.topSkills[0].label}</div><div class="mt-s">次之：${sc.topSkills[1].label}</div></div>
+      <div class="maptile" style="border-top-color:var(--teal)"><div class="mt-k">性格傾向</div><div class="mt-v">${highs.length?highs.join('、'):'各項均衡'}</div><div class="mt-s">${lows.length?'較低：'+lows.join('、'):'整體平穩'}</div></div>
+      <div class="maptile" style="border-top-color:var(--accent)"><div class="mt-k">職涯階段</div><div class="mt-v">${STAGE_NAME[sc.stage]}</div><div class="mt-s">${sc.lowC.length?'待強化：'+sc.lowC.map(c=>c.label).join('、'):'適應力良好'}</div></div>
+      <div class="maptile" style="border-top-color:var(--teal)"><div class="mt-k">下一步目標</div><div class="mt-v" style="font-size:.98rem">${data.goals.short||data.goals.vision||'—'}</div><div class="mt-s">短期 · 1 年內</div></div>
+    </div>
+    <p class="muted" style="margin-top:16px">這是你的職涯全貌速覽——點上方各分頁，可看每一塊的細節、解讀與建議。</p>`;
 
   document.getElementById('t_profile').innerHTML=`<div class="cards-g">
     <div class="kard kv"><h4>基本資料</h4><p><b>姓名：</b>${p.name}</p><p><b>現職：</b>${p.role}</p><p><b>專長：</b>${p.fields.join('、')}</p><p><b>年資：</b>${p.years}</p><p style="margin-top:8px;color:var(--ink-2)">${p.bio}</p></div>
@@ -542,34 +687,39 @@ function render(data,sc,rules,gen){
         <div class="secti ok">目前相對滿意</div>
         ${sc.strongDims.map(d=>`<div class="barline"><b>${d.label}</b><div class="bar"><i style="width:${d.cur*10}%"></i></div><span class="vv">${d.cur}/10</span></div>`).join('')}
       </div></div>
-    <p class="muted" style="margin-top:14px">雷達圖：藍色＝滿意度、綠色＝重要度；當綠線（重要度）明顯在藍線（滿意度）外側，就是最值得優先處理的面向。</p>`;
+    <p class="muted" style="margin-top:14px">雷達圖：藍線＝滿意度、橘線＝重要度；當橘線（重要度）明顯在藍線（滿意度）外側，就是最值得優先處理的面向。</p>
+    ${secAdvice(gen,'radar')}`;
   radarData=data.radar;drawRadar();
 
   document.getElementById('t_skill').innerHTML=`
     <div class="secti ok">招牌優勢（最高 2 項）</div><div class="tagrow">${sc.topSkills.map(s=>`<span class="tg">${s.label} · ${s.score}/5</span>`).join('')}</div>
     <div class="secti">能力全貌</div>
-    ${sc.skillsSorted.map(s=>`<div class="barline"><b>${s.label}</b><div class="bar"><i style="width:${s.score*20}%"></i></div><span class="vv">${s.score}/5</span></div>`).join('')}`;
+    ${sc.skillsSorted.map(s=>`<div class="barline"><b>${s.label}</b><div class="bar"><i style="width:${s.score*20}%"></i></div><span class="vv">${s.score}/5</span></div>`).join('')}
+    ${secAdvice(gen,'skill')}`;
 
   document.getElementById('t_drive').innerHTML=`
-    <div class="mentorbox" style="background:#EEF0FF;border-color:#C7CEFF;color:#3730A3">你最主要的動機是「<b>${sc.dominantAnchor.label}</b>」。${ANCHOR_MEANING[sc.dominantAnchor.k]||''}</div>
+    <div class="mentorbox" style="background:var(--brand-50);border-color:var(--brand);color:var(--ink-2)">你最主要的動機是「<b>${sc.dominantAnchor.label}</b>」。${ANCHOR_MEANING[sc.dominantAnchor.k]||''}</div>
     <div class="secti">你的內在驅力排序</div>
     ${sc.anchorsSorted.map((a,i)=>`<div class="barline"><b>${i===0?'★ ':''}${a.label}</b><div class="bar"><i style="width:${a.score/6*100}%"></i></div><span class="vv">${a.score}/6</span></div>`).join('')}
     <div class="secti ok">工作價值觀（重要度）</div>
     ${sc.valuesSorted.map(v=>{const gap=sc.valueGaps.find(g=>g.k===v.k);return `<div class="barline"><b>${v.label}${gap?' ⚠':''}</b><div class="bar"><i style="width:${v.score/5*100}%"></i></div><span class="vv">${v.score}/5</span></div>`;}).join('')}
-    ${sc.valueGaps.length?`<div class="mentorbox" style="margin-top:12px">⚠ 你很重視「${sc.valueGaps.map(v=>v.label).join('、')}」，但目前比較少被滿足——這是值得關注的調整訊號。</div>`:''}`;
+    ${sc.valueGaps.length?`<div class="mentorbox" style="margin-top:12px">⚠ 你很重視「${sc.valueGaps.map(v=>v.label).join('、')}」，但目前比較少被滿足——這是值得關注的調整訊號。</div>`:''}
+    ${secAdvice(gen,'drive')}`;
 
   document.getElementById('t_person').innerHTML=`
     <p class="muted" style="margin-bottom:12px">以下是你的性格傾向，僅供自我探索參考，不是臨床評估。每項下方有簡短解讀。</p>
     ${Object.keys(TRAIT_NAME).map(t=>`
       <div class="barline" style="margin-bottom:2px"><b>${TRAIT_NAME[t]}</b><div class="bar"><i style="width:${(sc.bigfive[t]-2)/8*100}%"></i></div><span class="vv">${levelTag(sc.bigfiveLevels[t])}</span></div>
-      <p class="muted" style="margin:0 0 12px 128px;font-size:.82rem">${TRAIT_MEANING[t][sc.bigfiveLevels[t]]}</p>`).join('')}`;
+      <p class="muted" style="margin:0 0 12px 128px;font-size:.82rem">${TRAIT_MEANING[t][sc.bigfiveLevels[t]]}</p>`).join('')}
+    ${secAdvice(gen,'person')}`;
 
   document.getElementById('t_stage').innerHTML=`
     <div class="tagrow"><span class="tg" style="font-size:.9rem">目前階段：${STAGE_NAME[sc.stage]}</span></div>
-    <div class="mentorbox" style="background:#EEF0FF;border-color:#C7CEFF;color:#3730A3">${STAGE_MEANING[sc.stage]||''}</div>
+    <div class="mentorbox" style="background:var(--brand-50);border-color:var(--brand);color:var(--ink-2)">${STAGE_MEANING[sc.stage]||''}</div>
     <div class="secti">職涯適應力</div>
     ${data.fourc.map(c=>`<div class="barline"><b>${c.label}</b><div class="bar ${c.score<3?'warn':''}"><i style="width:${c.score*20}%"></i></div><span class="vv">${c.score}/5</span></div>`).join('')}
-    ${sc.lowC.length?`<div class="mentorbox" style="margin-top:12px">待強化：${sc.lowC.map(c=>c.label).join('、')}。報告下方 AI Mentor 已針對此給建議。</div>`:''}`;
+    ${sc.lowC.length?`<div class="mentorbox" style="margin-top:12px">待強化：${sc.lowC.map(c=>c.label).join('、')}。</div>`:''}
+    ${secAdvice(gen,'stage')}`;
 
   document.getElementById('t_goals').innerHTML=`
     <div class="cards-g">
@@ -577,19 +727,25 @@ function render(data,sc,rules,gen){
       <div class="kard t2"><h4>中期 · 2–3 年</h4><p>${data.goals.mid||'—'}</p></div>
       <div class="kard t3"><h4>長期 · 4–5 年</h4><p>${data.goals.long||'—'}</p></div></div>
     <div class="secti">十年願景（自動拆解）</div>
-    <div class="timeline">${stages(data).map(st=>`<div class="tstage"><div class="yr">${st.yr}</div><div class="ti">${st.ti}</div><p>${st.body}</p></div>`).join('')}</div>`;
+    <div class="timeline">${stages(data,vision).map(st=>`<div class="tstage"><div class="yr">${st.yr}</div><div class="ti">${st.ti}</div><p>${st.body}</p></div>`).join('')}</div>
+    ${secAdvice(gen,'goals')}`;
 
   document.getElementById('mentor').innerHTML=`
     <div class="mentorbox">以下是 AI Mentor 根據你的測評，給你的整體回饋。</div>
     <div class="narrative">${gen.narrative}</div>
-    <p class="muted" style="margin-top:14px">本回饋依你的測評結果生成，僅供職涯探索參考。</p>`;
+    <p class="muted" style="margin-top:14px">本回饋依你的測評結果生成，僅供職涯探索參考。</p>
+    <div class="actions" style="margin-top:22px">
+      <span class="note">${CONFIG.apiUrl?'你的測評已自動儲存。':'（示範模式：已自動暫存於本機）'}</span>
+      <button class="btn btn-ghost" onclick="backToForm()">← 修改重新生成</button>
+      <button class="btn btn-primary" onclick="window.print()">列印 / 匯出完整 PDF</button>
+    </div>`;
   window.scrollTo({top:0,behavior:'smooth'});
 }
-function stages(data){const y=new Date().getFullYear();return [
+function stages(data,vision){const y=new Date().getFullYear();return [
   {yr:`${y}–${y+1}`,ti:'啟動期',body:data.goals.short||'建立專業聲量與作品'},
-  {yr:`${y+1}–${y+3}`,ti:'躍升期',body:data.goals.mid||'轉型為創新設計者'},
+  {yr:`${y+1}–${y+3}`,ti:'躍升期',body:data.goals.mid||'深耕主軸、累積成果'},
   {yr:`${y+3}–${y+5}`,ti:'拓展期',body:data.goals.long||'從執行者擴展為影響者'},
-  {yr:`${y+5}–${y+10}`,ti:'影響期',body:data.goals.vision||'成為領域核心人物'}];}
+  {yr:`${y+5}–${y+10}`,ti:'影響期',body:vision||'成為領域核心人物'}];}
 function showTab(t,el){document.querySelectorAll('.tabnav button').forEach(x=>x.classList.remove('active'));document.querySelectorAll('.tc').forEach(x=>x.classList.remove('active'));el.classList.add('active');document.getElementById(t==='mentor'?'mentor':'t_'+t).classList.add('active');window.scrollTo({top:0,behavior:'smooth'});}
 function backToForm(){document.getElementById('report').style.display='none';document.getElementById('assess').style.display='block';setStep(1);window.scrollTo({top:0,behavior:'smooth'});}
 function setStep(s){document.querySelectorAll('#stepper .step').forEach(x=>{const n=+x.dataset.s;x.classList.toggle('done',n<s);x.classList.toggle('on',n===s);});}
@@ -612,7 +768,7 @@ function drawRadar(){
   ctx.fillStyle='#64748B';ctx.font='600 11px Inter,sans-serif';ctx.textAlign='center';ctx.textBaseline='middle';
   for(let i=0;i<n;i++){const a=-Math.PI/2+i*2*Math.PI/n,x=cx+R*Math.cos(a),y=cy+R*Math.sin(a);ctx.beginPath();ctx.moveTo(cx,cy);ctx.lineTo(x,y);ctx.strokeStyle='#F1F4F9';ctx.stroke();ctx.fillText(radarData[i].label,cx+(R+22)*Math.cos(a),cy+(R+16)*Math.sin(a));}
   const poly=(key,st,fl)=>{ctx.beginPath();for(let i=0;i<n;i++){const a=-Math.PI/2+i*2*Math.PI/n,r=R*radarData[i][key]/10,x=cx+r*Math.cos(a),y=cy+r*Math.sin(a);i?ctx.lineTo(x,y):ctx.moveTo(x,y);}ctx.closePath();ctx.fillStyle=fl;ctx.fill();ctx.strokeStyle=st;ctx.lineWidth=2;ctx.stroke();};
-  poly('ideal','#0D9488','rgba(13,148,136,.12)');poly('cur','#4F46E5','rgba(79,70,229,.18)');
+  poly('ideal','#E8743B','rgba(232,116,59,.18)');poly('cur','#1E3A8A','rgba(30,58,138,.15)');
 }
 buildForm();
 </script>
