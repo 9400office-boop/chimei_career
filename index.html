@@ -142,19 +142,13 @@ canvas{max-width:100%;height:auto}
   <div class="hero">
     <h2>職涯發展測評</h2>
     <p>花幾分鐘填寫下列題目，系統會即時為你整理出個人化的職涯報告與發展建議。所有內容僅用於你的職涯規劃。</p>
-    <div class="stepper" id="stepper">
-      <div class="step on" data-s="1"><span class="n">1</span>填寫測評</div>
-      <div class="step" data-s="2"><span class="n">2</span>分析中</div>
-      <div class="step" data-s="3"><span class="n">3</span>整理建議</div>
-      <div class="step" data-s="4"><span class="n">4</span>產出報告</div>
-    </div>
   </div>
 
   <div class="card">
     <div class="card-h"><span class="idx">A</span><h3>專業檔案</h3></div>
     <div class="grid2">
       <div><label class="fld">姓名</label><input type="text" id="p_name" placeholder="請輸入姓名"></div>
-      <div><label class="fld">現職</label><input type="text" id="p_role" placeholder="例：教學中心 行政管理員"></div>
+      <div><label class="fld">現職</label><input type="text" id="p_role" placeholder=""></div>
       <div><label class="fld">專業領域 / 專長（逗號分隔）</label><input type="text" id="p_field" placeholder="例：課程設計, 數位教學, 資料分析"></div>
       <div><label class="fld">投入年資</label><input type="text" id="p_years" placeholder="例：5 年"></div>
     </div>
@@ -256,24 +250,11 @@ const CONFIG = {
   token:  "chimei-9400",   // 選填：與 Apps Script 設定的 SHARED_TOKEN 相同，多一層保護
 };
 
-/* ---------- ★ AI PROMPT（可直接編輯；正式版應放後端確保一致與安全） ----------
-   重點：規則引擎已決定「講什麼」，LLM 只負責「怎麼講」。 */
-const AI_SYSTEM_PROMPT = `
-你是專業且溫暖的職涯顧問，嚴格遵守以下全域護欄：
-1. 語氣：先肯定優勢，再給建議；鼓勵但不討好，誠實但不批判；繁體中文、口語、好讀。
-2. 不做：不做臨床或心理疾病診斷；不替使用者決定去留/離職；不貼死標籤；不誇大或承諾結果；只提供選項讓使用者自己選。
-3. 須追溯：只能根據「規則引擎提供的結論清單(conclusions)」改寫，不得新增清單以外的建議、不得更動結論、不得編造任何數據。
-4. AI Mentor 呈現：以「一段」連貫敘述（非條列）呈現——先用 1–2 句肯定優勢，再自然帶出 3–4 個最重要的建議（依優先級挑選，不必全列），最後一句鼓勵收尾；總長約 4–6 句。
-5. ★敘述限制：只能把提供的 conclusions 改寫並串接成段落；過場、銜接、開場與收尾句一律不得引入任何新的建議、結論或數據。
-6. 安全：若語氣路線為「穩定優先(A)」或出現耗損訊號，語氣加倍支持，僅提供「找信任的人或院內資源」等一般性建議，不評估風險、不保證。
-7. 標註：性格/階段等結果一律視為「傾向性參考，非定論、非臨床」。
-另輸出一段 3 句的整體摘要(summary)，供報告檔案頁使用。
-輸出 JSON：{ "summary": "三句摘要", "narrative": "一段 Mentor 敘述", "usedRuleIds": ["規則編號…"], "tone": "A|B|C|D|neutral" }
-`;
-/* 送給後端/模型的使用者訊息：畫像 + 語氣路線 + 規則結論清單 */
+/* ---------- 送給後端的資料（不含 AI Prompt） ----------
+   AI Prompt 與護欄已移到後端 Apps Script（SYSTEM_PROMPT），前端看不到、也改不到。
+   前端只送「畫像 + 語氣路線 + 規則結論清單」，由後端套上 prompt 後呼叫 Claude。 */
 function buildLLMPayload(data, sc, route, triggered){
   return {
-    system: AI_SYSTEM_PROMPT,
     user: {
       route,
       profile: data.profile,
