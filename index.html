@@ -268,13 +268,13 @@ canvas{max-width:100%;height:auto}
   </div>
   <div class="rolewrap">
     <div class="rolecard" onclick="showRole('employee')">
-      <div class="roleicon">員</div>
+      <div class="roleicon"></div>
       <h3>我是員工</h3>
       <p>填寫職涯測評，取得個人化的職涯地圖與發展建議。</p>
       <span class="rolego">開始填寫 →</span>
     </div>
     <div class="rolecard mgr" onclick="showRole('manager')">
-      <div class="roleicon">主</div>
+      <div class="roleicon"></div>
       <h3>我是主管</h3>
       <p>輸入人事號與 Email 登入，檢視所屬單位的職涯發展彙整。</p>
       <span class="rolego">主管登入 →</span>
@@ -287,8 +287,8 @@ canvas{max-width:100%;height:auto}
   <div class="card" id="mgrLogin" style="max-width:460px;margin:36px auto">
     <div class="card-h"><h3>主管登入</h3></div>
     <p class="desc">輸入你的人事號與院內 Email，檢視所屬單位的彙整。</p>
-    <label class="fld">人事號</label><input type="text" id="mgrId" placeholder="例：900677">
-    <label class="fld" style="margin-top:12px">Email</label><input type="text" id="mgrEmail" placeholder="例：900677@chimei.org.tw">
+    <label class="fld">人事號</label><input type="text" id="mgrId" placeholder="">
+    <label class="fld" style="margin-top:12px">Email</label><input type="text" id="mgrEmail" placeholder="">
     <div class="actions" style="margin-top:18px">
       <button class="btn btn-ghost" onclick="showRole('landing')">← 返回</button>
       <button class="btn btn-primary" onclick="mgrLogin()">登入</button>
@@ -308,16 +308,16 @@ canvas{max-width:100%;height:auto}
 
   <div class="card">
     <div class="card-h"><h3>履歷健檢</h3><span class="muted" style="font-size:.78rem">選用</span></div>
-    <p class="desc">上傳或貼上履歷，系統會先去除個資，再用「行動＋成果＋對雇主價值」的三層寫法做健檢與改寫，並結合你的測評給出量化建議與價值主張。生成報告時會多一個「履歷健檢」分頁。</p>
+    <p class="desc">上傳或貼上履歷，系統會先去除個資，再用「行動＋成果＋對雇主價值」的三層寫法做健檢與改寫，並結合你的測評給出量化建議與價值主張。</p>
     <div class="upbox">
-      <div class="upbox-h">上傳或貼上履歷（個資會自動移除、原始檔不儲存）</div>
+      <div class="upbox-h">上傳或貼上履歷</div>
       <input type="file" id="cvFile" accept=".txt,.pdf,.docx">
-      <textarea id="cvPaste" placeholder="或直接貼上履歷文字（最穩定）…"></textarea>
-      <div style="margin-top:10px"><label class="fld">想應徵的方向／職位（選填，讓雇主痛點分析更準）</label><input type="text" id="cvTarget" placeholder="例：醫學教育數位轉型專員"></div>
-      <button type="button" class="btn btn-ghost" style="margin-top:10px" onclick="deidentifyCV()">去識別化（預覽）</button>
+      <textarea id="cvPaste" placeholder="直接貼上履歷文字"></textarea>
+      <div style="margin-top:10px"><label class="fld">想應徵的方向／職位（選填）</label><input type="text" id="cvTarget" placeholder=""></div>
+      <button type="button" class="btn btn-ghost" style="margin-top:10px" onclick="deidentifyCV()">履歷預覽</button>
       <div class="cvstatus" id="cvStatus"></div>
       <div class="cvpreview" id="cvPreview" style="display:none"></div>
-      <p class="cvnote">只移除姓名、身分證、電話、地址、生日、Email 等個資；分析的是「經歷內容」。去識別化無法保證 100%，請看一下預覽再生成；建議避免上傳含照片的檔案。</p>
+      <p class="cvnote">移除個資；分析的是「經歷內容」。建議避免上傳含照片的檔案。</p>
     </div>
   </div>
 
@@ -608,7 +608,7 @@ async function deidentifyCV(){
   fileEl.value=''; // 不保留原始檔
   status.textContent='✓ 已移除個資（見下方預覽）。生成報告時會自動做履歷健檢與改寫。請先看一下預覽確認沒有漏網個資。';
 }
-// 生成時呼叫：把去識別化履歷＋自評強項＋目標送後端，做三層健檢與改寫
+// 
 async function analyzeResume(data,sc){
   if(!cvCleanText || !CONFIG.apiUrl) return null;
   try{
@@ -647,7 +647,7 @@ function score(d){
   const radarBy=Object.fromEntries(r.map(x=>[x.k,x]));
   const valueGaps=d.values.filter(v=>v.score>=4 && radarBy[v.facet] && radarBy[v.facet].cur<6);
   const skillsSorted=[...d.skills].sort((a,b)=>b.score-a.score);
-  // Big Five：每特質兩題（正向 + 反向(6-x)）求和 → 2..10
+  // 
   const bf={};BIGFIVE.forEach((b,i)=>{const v=d.bigfive[i].rev?6-d.bigfive[i].raw:d.bigfive[i].raw;bf[b.t]=(bf[b.t]||0)+v;});
   const bfLevels=Object.fromEntries(Object.keys(bf).map(t=>[t, bf[t]>=8?'high':bf[t]<=4?'low':'mid']));
   const lowC=d.fourc.filter(c=>c.score<3);
@@ -772,9 +772,9 @@ function renderResume(r){
     h+=`<div class="stats"><div class="stat"><div class="lab">履歷強度</div><div class="big">${sc}<span class="unit"> /100</span></div></div></div>`;
   }
   if(r.summary) h+=`<div class="mentorbox">${r.summary}</div>`;
-  if(r.valueProp) h+=`<div class="secti ok">價值主張（可放履歷開頭／自我介紹）</div><div class="kard t2"><p style="font-size:.98rem;color:var(--ink)">${r.valueProp}</p></div>`;
+  if(r.valueProp) h+=`<div class="secti ok">價值主張</div><div class="kard t2"><p style="font-size:.98rem;color:var(--ink)">${r.valueProp}</p></div>`;
   if(Array.isArray(r.weak)&&r.weak.length){
-    h+=`<div class="secti">弱句改寫（三層寫法：行動＋成果＋對雇主價值）</div>`;
+    h+=`<div class="secti">改寫</div>`;
     h+=r.weak.map(w=>`<div class="kard" style="margin-bottom:10px"><p class="muted" style="font-size:.84rem">原句：${w.original||'—'}</p><p style="margin-top:6px;color:var(--ink)"><b>改寫：</b>${w.rewrite||'—'}</p></div>`).join('');
   }
   if(Array.isArray(r.quantify)&&r.quantify.length){
