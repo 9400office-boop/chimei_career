@@ -160,6 +160,22 @@ canvas{max-width:100%;height:auto}
 .loading p{color:var(--ink-2);font-size:.96rem;font-weight:600}
 .loading .spin{width:48px;height:48px;border:4px solid var(--line);border-top-color:var(--teal);border-radius:50%;animation:spin .9s linear infinite}
 @keyframes spin{to{transform:rotate(360deg)}}
+.upbox{border:1px dashed var(--brand);background:var(--brand-50);border-radius:12px;padding:16px;margin-bottom:18px}
+.upbox-h{font-size:.86rem;font-weight:700;color:var(--brand-700);margin-bottom:10px}
+.upbox input[type=file]{display:block;margin-bottom:10px;font-size:.85rem;color:var(--ink-2)}
+.upbox textarea{width:100%;min-height:72px;border:1px solid var(--line);border-radius:8px;padding:10px;font-size:.88rem;background:#fff;resize:vertical}
+.cvstatus{font-size:.82rem;color:var(--ink-2);margin-top:8px;min-height:18px}
+.cvpreview{margin-top:10px;max-height:170px;overflow:auto;background:#fff;border:1px solid var(--line);border-radius:8px;padding:10px;font-size:.8rem;color:var(--muted);white-space:pre-wrap;line-height:1.6}
+.cvnote{font-size:.76rem;color:var(--muted);margin-top:8px}
+.rolewrap{display:flex;gap:20px;justify-content:center;flex-wrap:wrap;margin:10px 0 50px}
+.rolecard{background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:30px 28px;width:320px;cursor:pointer;box-shadow:var(--sh-sm);transition:.15s;text-align:center}
+.rolecard:hover{border-color:var(--brand);box-shadow:var(--sh);transform:translateY(-2px)}
+.rolecard .roleicon{width:54px;height:54px;border-radius:14px;background:linear-gradient(135deg,var(--brand),var(--teal));color:#fff;font-size:1.4rem;font-weight:800;display:flex;align-items:center;justify-content:center;margin:0 auto 14px}
+.rolecard.mgr .roleicon{background:linear-gradient(135deg,var(--accent),#C55A11)}
+.rolecard h3{font-size:1.2rem;margin-bottom:8px}
+.rolecard p{color:var(--muted);font-size:.9rem;min-height:50px}
+.rolecard .rolego{display:inline-block;margin-top:12px;font-weight:700;color:var(--brand)}
+.rolecard.mgr .rolego{color:var(--accent)}
 
 /* ============================================================
    報告：雜誌 / 編輯風主題（只影響 #report，問卷不受影響）
@@ -243,19 +259,76 @@ canvas{max-width:100%;height:auto}
 </div></div>
 
 <div class="wrap">
-<div id="assess">
+
+<!-- ===== 進入頁：分流 員工／主管 ===== -->
+<div id="landing">
+  <div class="hero" style="text-align:center;padding:56px 0 26px">
+    <h2 style="font-size:1.9rem">智能職涯發展系統</h2>
+    <p style="max-width:560px;margin:8px auto 0">請選擇你的身分</p>
+  </div>
+  <div class="rolewrap">
+    <div class="rolecard" onclick="showRole('employee')">
+      <div class="roleicon">員</div>
+      <h3>我是員工</h3>
+      <p>填寫職涯測評，取得個人化的職涯地圖與發展建議。</p>
+      <span class="rolego">開始填寫 →</span>
+    </div>
+    <div class="rolecard mgr" onclick="showRole('manager')">
+      <div class="roleicon">主</div>
+      <h3>我是主管</h3>
+      <p>輸入人事號與 Email 登入，檢視所屬單位的職涯發展彙整。</p>
+      <span class="rolego">主管登入 →</span>
+    </div>
+  </div>
+</div>
+
+<!-- ===== 主管：登入＋彙整儀表板 ===== -->
+<div id="mgr" style="display:none">
+  <div class="card" id="mgrLogin" style="max-width:460px;margin:36px auto">
+    <div class="card-h"><h3>主管登入</h3></div>
+    <p class="desc">輸入你的人事號與院內 Email，檢視所屬單位的彙整。</p>
+    <label class="fld">人事號</label><input type="text" id="mgrId" placeholder="例：900677">
+    <label class="fld" style="margin-top:12px">Email</label><input type="text" id="mgrEmail" placeholder="例：900677@chimei.org.tw">
+    <div class="actions" style="margin-top:18px">
+      <button class="btn btn-ghost" onclick="showRole('landing')">← 返回</button>
+      <button class="btn btn-primary" onclick="mgrLogin()">登入</button>
+    </div>
+    <div class="cvstatus" id="mgrMsg"></div>
+  </div>
+  <div id="mgrDash"></div>
+</div>
+
+<div id="assess" style="display:none">
+  <button class="btn btn-ghost" onclick="showRole('landing')" style="margin:4px 0 4px">← 返回首頁</button>
   <div class="hero">
     <h2>職涯發展測評</h2>
     <p>花幾分鐘填寫下列題目，系統會即時為你整理出個人化的職涯報告與發展建議。所有內容僅用於你的職涯規劃。</p>
+    <p style="font-size:.74rem;color:var(--muted-2);margin-top:6px">填寫前請知悉：你的單位主管可檢視測評結果。</p>
+  </div>
+
+  <div class="card">
+    <div class="card-h"><h3>履歷健檢</h3><span class="muted" style="font-size:.78rem">選用</span></div>
+    <p class="desc">上傳或貼上履歷，系統會先去除個資，再用「行動＋成果＋對雇主價值」的三層寫法做健檢與改寫，並結合你的測評給出量化建議與價值主張。生成報告時會多一個「履歷健檢」分頁。</p>
+    <div class="upbox">
+      <div class="upbox-h">上傳或貼上履歷（個資會自動移除、原始檔不儲存）</div>
+      <input type="file" id="cvFile" accept=".txt,.pdf,.docx">
+      <textarea id="cvPaste" placeholder="或直接貼上履歷文字（最穩定）…"></textarea>
+      <div style="margin-top:10px"><label class="fld">想應徵的方向／職位（選填，讓雇主痛點分析更準）</label><input type="text" id="cvTarget" placeholder="例：醫學教育數位轉型專員"></div>
+      <button type="button" class="btn btn-ghost" style="margin-top:10px" onclick="deidentifyCV()">去識別化（預覽）</button>
+      <div class="cvstatus" id="cvStatus"></div>
+      <div class="cvpreview" id="cvPreview" style="display:none"></div>
+      <p class="cvnote">只移除姓名、身分證、電話、地址、生日、Email 等個資；分析的是「經歷內容」。去識別化無法保證 100%，請看一下預覽再生成；建議避免上傳含照片的檔案。</p>
+    </div>
   </div>
 
   <div class="card">
     <div class="card-h"><span class="idx">A</span><h3>專業檔案</h3></div>
     <div class="grid2">
       <div><label class="fld">姓名</label><input type="text" id="p_name" placeholder="請輸入姓名"></div>
+      <div><label class="fld">單位／部門</label><select id="p_unit"><option value="">請選擇…</option><option>深耕辦公室</option><option>藥劑部</option><option>教學部</option><option>其他</option></select></div>
       <div><label class="fld">現職</label><input type="text" id="p_role" placeholder=""></div>
-      <div><label class="fld">專業領域 / 專長（逗號分隔）</label><input type="text" id="p_field" placeholder="例：課程設計, 數位教學, 資料分析"></div>
       <div><label class="fld">投入年資</label><input type="text" id="p_years" placeholder="例：5 年"></div>
+      <div><label class="fld">專業領域 / 專長（逗號分隔）</label><input type="text" id="p_field" placeholder="例：課程設計, 數位教學, 資料分析"></div>
     </div>
     <div style="margin-top:16px"><label class="fld">一句話背景簡介</label><textarea id="p_bio" placeholder="用一兩句話簡述你的背景與目前關注的方向"></textarea></div>
   </div>
@@ -316,6 +389,18 @@ canvas{max-width:100%;height:auto}
   </div>
 
   <div class="card">
+    <div class="card-h"><span class="idx">I</span><h3>經驗與成長</h3></div>
+    <p class="desc">挑一段你印象最深的工作經驗，用下面 5 個問題回顧。系統會把它整理成「履歷亮點與量化建議」，並回顧你的內在成長。</p>
+    <div class="grid2">
+      <div class="field"><label class="fld">1. 情境：當時面對什麼狀況、或要解決什麼問題？</label><textarea id="exp_situation" placeholder="例：單位要導入新的數位教學，但同仁不熟工具、意願低"></textarea></div>
+      <div class="field"><label class="fld">2. 行動：你具體做了什麼？（你的角色與關鍵作為）</label><textarea id="exp_action" placeholder="例：設計分階段工作坊、做操作手冊、一對一陪跑"></textarea></div>
+      <div class="field"><label class="fld">3. 成果：帶來什麼結果？盡量量化</label><textarea id="exp_result" placeholder="例：3 個月內 30 位同仁完訓，課程數成長 2 倍"></textarea></div>
+      <div class="field"><label class="fld">4. 下一步：還需要補強什麼、需要誰的協助或什麼資源？</label><textarea id="exp_next" placeholder="例：需要資料分析技能、與資訊室合作、主管的時間支持"></textarea></div>
+    </div>
+    <div style="margin-top:16px"><label class="fld">5. 內在成長：除了技能，這段經驗讓你在心態、信心或自我認識上最大的成長是什麼？</label><textarea id="exp_growth" placeholder="例：學會在不確定中先小步嘗試，對帶動改變更有信心"></textarea></div>
+  </div>
+
+  <div class="card">
     <div class="actions">
       <span class="note">完成後按下方按鈕，系統會即時為你生成個人化職涯報告。</span>
       <button class="btn btn-primary" onclick="run()">生成我的職涯報告 →</button>
@@ -336,6 +421,8 @@ canvas{max-width:100%;height:auto}
       <div class="tc" id="t_person"></div>
       <div class="tc" id="t_stage"></div>
       <div class="tc" id="t_goals"></div>
+      <div class="tc" id="t_exp"></div>
+      <div class="tc" id="t_resume"></div>
       <div class="tc" id="mentor"></div>
     </div>
   </div>
@@ -368,6 +455,7 @@ function buildLLMPayload(data, sc, route, triggered){
         dominantAnchor:sc.dominantAnchor, topValues:sc.topValues,
         topSkills:sc.topSkills.map(s=>s.label), bigfive:sc.bigfiveLevels, stage:data.stage },
       goals: data.goals,
+      experience: data.experience,
       conclusions: triggered.map(t=>({ruleId:t.id, 結論:t.concl, 建議方向:t.dir}))
     }
   };
@@ -472,11 +560,74 @@ function buildForm(){
   document.getElementById('fourcRows').innerHTML=FOURC.map(c=>`<div class="qitem"><div class="qhead">${c.label}<small>${c.item}</small></div>${btnScale('fc_'+c.k,1,5,3)}</div>`).join('');
 }
 
+/* ---------- 履歷上傳 → 去識別化 → AI 抽取預填（個資不落地） ---------- */
+function loadScript(src){return new Promise((ok,no)=>{const s=document.createElement('script');s.src=src;s.onload=ok;s.onerror=()=>no(new Error('載入失敗'));document.head.appendChild(s);});}
+async function extractText(file){
+  const n=file.name.toLowerCase();
+  if(n.endsWith('.txt')) return await file.text();
+  if(n.endsWith('.pdf')){
+    if(!window.pdfjsLib){await loadScript('https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js');window.pdfjsLib.GlobalWorkerOptions.workerSrc='https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';}
+    const buf=await file.arrayBuffer();const pdf=await window.pdfjsLib.getDocument({data:buf}).promise;let t='';
+    for(let i=1;i<=pdf.numPages;i++){const pg=await pdf.getPage(i);const c=await pg.getTextContent();t+=c.items.map(x=>x.str).join(' ')+'\n';}
+    return t;
+  }
+  if(n.endsWith('.docx')){
+    if(!window.mammoth){await loadScript('https://cdnjs.cloudflare.com/ajax/libs/mammoth/1.6.0/mammoth.browser.min.js');}
+    const buf=await file.arrayBuffer();const r=await window.mammoth.extractRawText({arrayBuffer:buf});return r.value;
+  }
+  throw new Error('不支援的格式（請用 .txt/.pdf/.docx 或直接貼上文字）');
+}
+// 去除直接可識別個資：Email、身分證、電話、生日、地址、（有標籤的）姓名
+function deidentify(t){
+  if(!t) return '';
+  let s=String(t);
+  s=s.replace(/[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}/g,'［已移除Email］');
+  s=s.replace(/\b[A-Za-z][12]\d{8}\b/g,'［已移除身分證］');
+  s=s.replace(/(\+?886[-\s]?|0)9\d{2}[-\s]?\d{3}[-\s]?\d{3}/g,'［已移除電話］');
+  s=s.replace(/(\+?886[-\s]?|0)\d{1,2}[-\s]?\d{3,4}[-\s]?\d{3,4}/g,'［已移除電話］');
+  s=s.replace(/(姓\s*名|Name)\s*[:：]\s*[^\n\r，,；;｜|]{1,20}/gi,'$1：［已移除］');
+  s=s.replace(/(出生(日期)?|生日|Birth(day)?|D\.?O\.?B\.?)\s*[:：]?\s*(民國)?\s*\d{1,4}\s*[\/年.\-]\s*\d{1,2}\s*[\/月.\-]\s*\d{1,2}\s*日?/gi,'$1：［已移除生日］');
+  s=s.replace(/(地址|住址|通訊地址|戶籍地址|現居地?|Address)\s*[:：]\s*[^\n\r]{2,40}/gi,'$1：［已移除地址］');
+  s=s.replace(/[一-龥]{2,3}[市縣][一-龥]{1,4}[區鄉鎮市][一-龥0-9]{0,12}(路|街|大道|巷|弄)[\d一-龥號樓之巷弄F\-]+/g,'［已移除地址］');
+  return s;
+}
+let cvCleanText='';   // 去識別化後的履歷文字（暫存記憶體，生成時送後端分析，不落地）
+async function deidentifyCV(){
+  const fileEl=document.getElementById('cvFile'), paste=document.getElementById('cvPaste').value.trim();
+  const status=document.getElementById('cvStatus'), prev=document.getElementById('cvPreview');
+  let raw='';
+  try{
+    status.textContent='讀取中…';
+    if(fileEl.files && fileEl.files[0]) raw=await extractText(fileEl.files[0]);
+    else if(paste) raw=paste;
+    else { status.textContent='請先選擇檔案或貼上履歷文字。'; return; }
+  }catch(e){ status.textContent='讀取失敗：'+e.message; return; }
+  const clean=deidentify(raw);
+  cvCleanText=clean;
+  prev.style.display='block'; prev.textContent=clean;
+  fileEl.value=''; // 不保留原始檔
+  status.textContent='✓ 已移除個資（見下方預覽）。生成報告時會自動做履歷健檢與改寫。請先看一下預覽確認沒有漏網個資。';
+}
+// 生成時呼叫：把去識別化履歷＋自評強項＋目標送後端，做三層健檢與改寫
+async function analyzeResume(data,sc){
+  if(!cvCleanText || !CONFIG.apiUrl) return null;
+  try{
+    const res=await fetch(CONFIG.apiUrl,{method:'POST',headers:{'Content-Type':'text/plain;charset=utf-8'},
+      body:JSON.stringify({action:'resume',token:CONFIG.token,
+        text:cvCleanText.slice(0,6000),
+        target:document.getElementById('cvTarget')?document.getElementById('cvTarget').value:'',
+        topSkills:sc.topSkills.map(s=>s.label), goals:data.goals})});
+    const j=await res.json();
+    if(j && (j.score!==undefined || j.weak || j.valueProp)) return j;
+    return {error:(j&&j.error)||'no result'};
+  }catch(e){ return {error:String(e)}; }
+}
+
 /* ---------- ② 計分 ---------- */
 function collect(){
   const val=id=>document.getElementById(id).value,num=id=>parseInt(document.getElementById(id).value,10);
   return {
-    profile:{name:val('p_name'),role:val('p_role'),fields:val('p_field').split(/[,，]/).map(s=>s.trim()).filter(Boolean),years:val('p_years'),bio:val('p_bio')},
+    profile:{name:val('p_name'),unit:val('p_unit'),role:val('p_role'),fields:val('p_field').split(/[,，]/).map(s=>s.trim()).filter(Boolean),years:val('p_years'),bio:val('p_bio')},
     radar:RADAR_DIMS.map(d=>({k:d.k,label:d.label,cur:num('rc_'+d.k),ideal:num('ri_'+d.k),gap:num('ri_'+d.k)-num('rc_'+d.k)})),
     anchors:ANCHORS.map(a=>({...a,score:num('an_'+a.k)})),
     values:VALUES.map(v=>({...v,score:num('va_'+v.k)})),
@@ -484,7 +635,8 @@ function collect(){
     bigfive:BIGFIVE.map((b,i)=>({...b,raw:num('bf_'+i)})),
     stage:document.getElementById('stage').value,
     fourc:FOURC.map(c=>({...c,score:num('fc_'+c.k)})),
-    goals:{short:val('g_short'),mid:val('g_mid'),long:val('g_long'),vision:val('g_vision')}
+    goals:{short:val('g_short'),mid:val('g_mid'),long:val('g_long'),vision:val('g_vision')},
+    experience:{situation:val('exp_situation'),action:val('exp_action'),result:val('exp_result'),next:val('exp_next'),growth:val('exp_growth')}
   };
 }
 function score(d){
@@ -610,6 +762,36 @@ function buildSections(triggered){
   return out;
 }
 function secAdvice(gen,key){ return (gen.sections&&gen.sections[key]) ? `<div class="mentorbox" style="margin-top:14px"><b>給你的建議：</b>${gen.sections[key]}</div>` : ''; }
+// 履歷優化分頁渲染
+function renderResume(r){
+  if(!r) return `<p class="muted">（選用）回到測評頁最上方的「履歷健檢」上傳或貼上履歷、按「去識別化」，生成報告時這裡就會出現履歷強度、弱句改寫、量化建議與價值主張。</p>`;
+  if(r.error) return `<p class="muted">履歷分析未完成：${r.error}。請確認後端已部署新版本（含 resume 動作）、或稍後再試。你的去識別化內容仍保留在測評頁。</p>`;
+  const sc = (typeof r.score==='number')?r.score:null;
+  let h='';
+  if(sc!==null){
+    h+=`<div class="stats"><div class="stat"><div class="lab">履歷強度</div><div class="big">${sc}<span class="unit"> /100</span></div></div></div>`;
+  }
+  if(r.summary) h+=`<div class="mentorbox">${r.summary}</div>`;
+  if(r.valueProp) h+=`<div class="secti ok">價值主張（可放履歷開頭／自我介紹）</div><div class="kard t2"><p style="font-size:.98rem;color:var(--ink)">${r.valueProp}</p></div>`;
+  if(Array.isArray(r.weak)&&r.weak.length){
+    h+=`<div class="secti">弱句改寫（三層寫法：行動＋成果＋對雇主價值）</div>`;
+    h+=r.weak.map(w=>`<div class="kard" style="margin-bottom:10px"><p class="muted" style="font-size:.84rem">原句：${w.original||'—'}</p><p style="margin-top:6px;color:var(--ink)"><b>改寫：</b>${w.rewrite||'—'}</p></div>`).join('');
+  }
+  if(Array.isArray(r.quantify)&&r.quantify.length){
+    h+=`<div class="secti">量化建議</div><ul style="margin-left:18px">`+r.quantify.map(q=>`<li style="margin-bottom:5px;color:var(--ink-2)">${q}</li>`).join('')+`</ul>`;
+  }
+  if(r.cross) h+=`<div class="mentorbox" style="margin-top:14px;background:var(--brand-50);border-color:var(--brand);color:var(--ink-2)"><b>與你的測評對照：</b>${r.cross}</div>`;
+  h+=`<p class="muted" style="margin-top:14px;font-size:.8rem">本分析基於「已去識別化」的履歷內容；原始履歷不會儲存。</p>`;
+  return h;
+}
+// 經驗與成長的本地備援（後端未回傳 exp 時用）：把行動＋成果組成履歷亮點草稿
+function localExp(ex){
+  if(!ex||!(ex.action||ex.result))return '';
+  const hl=(ex.action||'')+(ex.result?('，'+ex.result):'');
+  let s=`<b>履歷亮點（草稿）：</b>${hl}。建議補上具體數字（人數／比例／金額／時間），把「我做了什麼」升級成「我為團隊或單位帶來什麼價值」。`;
+  if(ex.growth)s+=`<br><b>內在成長：</b>${ex.growth}`;
+  return s;
+}
 function localNarrative(data,sc,triggered){
   const open=`${data.profile.name}，先說好消息：你的方向感其實滿清楚的。你主要由「${sc.dominantAnchor.label}」這份內在動力驅動，這會是你往前走最穩固的底氣。`;
   const body=triggered.filter(t=>t.id!=='SUM-01').slice(0,4).map(t=>stripLead(t.text)).join('');
@@ -627,9 +809,9 @@ async function run(){
     setStep(2);
     const sc=score(data);
     const rules=runRules(data,sc);setStep(3);
-    const gen=await generate(data,sc,rules);setStep(4);
-    last={data,sc,rules,gen,ts:new Date().toISOString()};
-    render(data,sc,rules,gen);
+    const [gen,resume]=await Promise.all([generate(data,sc,rules), analyzeResume(data,sc)]);setStep(4);
+    last={data,sc,rules,gen,resume,ts:new Date().toISOString()};
+    render(data,sc,rules,gen,resume);
     saveSubmission();           // 生成報告時自動儲存，使用者不需另外按按鈕
   } finally { showLoading(false); }
 }
@@ -642,7 +824,7 @@ function deriveVision(data,sc){
   return `以「${sc.topSkills[0].label}」為核心優勢，${aim}${lg?('，並逐步實現「'+lg+'」'):''}。`;
 }
 function levelTag(t){const lv=t;return `<span class="tg lv-${lv}">${lv==='high'?'偏高':lv==='low'?'偏低':'中等'}</span>`;}
-function render(data,sc,rules,gen){
+function render(data,sc,rules,gen,resume){
   const p=data.profile;
   document.getElementById('assess').style.display='none';
   document.getElementById('report').style.display='block';
@@ -653,14 +835,14 @@ function render(data,sc,rules,gen){
   document.getElementById('rVision').textContent='願景：'+vision;
   document.getElementById('rBadges').innerHTML=
     `<span class="badge">個人化職涯報告</span>`;
-  const tabs=[['map','職涯地圖'],['profile','專業檔案'],['radar','職涯滿意度'],['skill','核心競爭力'],['drive','動機與價值'],['person','性格傾向'],['stage','職涯階段'],['goals','目標與願景'],['mentor','AI Mentor 建議']];
+  const tabs=[['map','職涯地圖'],['profile','專業檔案'],['radar','職涯滿意度'],['skill','核心競爭力'],['drive','動機與價值'],['person','性格傾向'],['stage','職涯階段'],['goals','目標與願景'],['exp','經驗與成長'],['resume','履歷健檢'],['mentor','AI Mentor 建議']];
   document.getElementById('tabnav').innerHTML=tabs.map((t,i)=>`<button class="${t[0]==='mentor'?'mentor':''} ${i===0?'active':''}" onclick="showTab('${t[0]}',this)">${t[1]}</button>`).join('');
 
   const highs=Object.keys(TRAIT_NAME).filter(t=>sc.bigfiveLevels[t]==='high').map(t=>TRAIT_NAME[t]);
   const lows=Object.keys(TRAIT_NAME).filter(t=>sc.bigfiveLevels[t]==='low').map(t=>TRAIT_NAME[t]);
   document.getElementById('t_map').innerHTML=`
     <div class="mapband">
-      <div class="mapkicker">${new Date().getFullYear()} 年度 · 個人職涯</div>
+      <div class="mapkicker">${new Date().getFullYear()} 年度 · 個人職涯特輯</div>
       <div class="mapband-name">${p.name}　的職涯地圖</div>
       <div class="mapband-sub">目前階段：${STAGE_NAME[sc.stage]}　·　主導動機：${sc.dominantAnchor.label}</div>
       <div class="mapband-vision">願景：${vision}</div>
@@ -735,6 +917,25 @@ function render(data,sc,rules,gen){
     <div class="timeline">${stages(data,vision).map(st=>`<div class="tstage"><div class="yr">${st.yr}</div><div class="ti">${st.ti}</div><p>${st.body}</p></div>`).join('')}</div>
     ${secAdvice(gen,'goals')}`;
 
+  const ex=data.experience||{};
+  const expHas=ex.situation||ex.action||ex.result||ex.next||ex.growth;
+  document.getElementById('t_exp').innerHTML= expHas ? `
+    <div class="secti">你的代表性經驗</div>
+    <div class="cards-g">
+      <div class="kard"><h4>情境</h4><p>${ex.situation||'—'}</p></div>
+      <div class="kard t2"><h4>行動</h4><p>${ex.action||'—'}</p></div>
+      <div class="kard t3"><h4>成果</h4><p>${ex.result||'—'}</p></div>
+    </div>
+    <div class="secti">下一步與所需協助</div>
+    <p class="muted" style="font-size:.92rem;color:var(--ink-2)">${ex.next||'—'}</p>
+    <div class="secti ok">內在成長</div>
+    <p class="muted" style="font-size:.92rem;color:var(--ink-2)">${ex.growth||'—'}</p>
+    ${ (gen.sections&&gen.sections.exp) ? `<div class="mentorbox" style="margin-top:14px"><b>履歷亮點與建議：</b>${gen.sections.exp}</div>` : (localExp(ex)?`<div class="mentorbox" style="margin-top:14px">${localExp(ex)}</div>`:'') }`
+    : `<p class="muted">這次沒有填寫「經驗與成長」。回到測評填一段你印象最深的經驗，系統就會幫你整理成履歷亮點與成長回顧。</p>`;
+
+  // 履歷優化分頁
+  document.getElementById('t_resume').innerHTML = renderResume(resume);
+
   document.getElementById('mentor').innerHTML=`
     <div class="mentorbox">以下是 AI Mentor 根據你的測評，給你的整體回饋。</div>
     <div class="narrative">${gen.narrative}</div>
@@ -758,7 +959,8 @@ function setStep(s){document.querySelectorAll('#stepper .step').forEach(x=>{cons
 async function saveSubmission(){
   if(!last){toast('請先生成報告');return;}
   const rec={user:last.data.profile.name,role:last.data.profile.role,submittedAt:last.ts,data:last.data,scores:last.sc,route:last.rules.route,
-    mentor:{narrative:last.gen.narrative, ruleIds:last.gen.ruleIds}};  // 規則編號留後台供稽核，不顯示給使用者
+    mentor:{narrative:last.gen.narrative, ruleIds:last.gen.ruleIds},
+    resume:(last.resume && !last.resume.error)?last.resume:null};  // 履歷健檢結果（已去識別化），供日後彙整
   if(CONFIG.apiUrl){try{const res=await fetch(CONFIG.apiUrl,{method:'POST',headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify({action:'submit',token:CONFIG.token,record:rec})});toast(res.ok?'已儲存至 Google Sheet ✓':'儲存失敗');}catch(e){toast('連線失敗');}}
   else{try{const a=JSON.parse(localStorage.getItem('career_v3')||'[]');a.push(rec);localStorage.setItem('career_v3',JSON.stringify(a));toast('示範模式：已暫存於本機 ✓');}catch(e){toast('本機儲存失敗');}}
 }
@@ -775,7 +977,64 @@ function drawRadar(){
   const poly=(key,st,fl)=>{ctx.beginPath();for(let i=0;i<n;i++){const a=-Math.PI/2+i*2*Math.PI/n,r=R*radarData[i][key]/10,x=cx+r*Math.cos(a),y=cy+r*Math.sin(a);i?ctx.lineTo(x,y):ctx.moveTo(x,y);}ctx.closePath();ctx.fillStyle=fl;ctx.fill();ctx.strokeStyle=st;ctx.lineWidth=2;ctx.stroke();};
   poly('ideal','#E8743B','rgba(232,116,59,.18)');poly('cur','#1E3A8A','rgba(30,58,138,.15)');
 }
+/* ---------- 進入頁分流 ＋ 主管登入儀表板 ---------- */
+function showRole(r){
+  document.getElementById('landing').style.display = r==='landing'?'block':'none';
+  document.getElementById('assess').style.display  = r==='employee'?'block':'none';
+  document.getElementById('mgr').style.display     = r==='manager'?'block':'none';
+  if(r!=='employee') document.getElementById('report').style.display='none';
+  window.scrollTo({top:0});
+}
+async function mgrLogin(){
+  const empId=document.getElementById('mgrId').value.trim();
+  const email=document.getElementById('mgrEmail').value.trim();
+  const msg=document.getElementById('mgrMsg');
+  if(!empId||!email){msg.textContent='請輸入人事號與 Email';return;}
+  if(!CONFIG.apiUrl){msg.textContent='尚未設定後端網址（CONFIG.apiUrl）';return;}
+  msg.textContent='登入中…';
+  try{
+    const res=await fetch(CONFIG.apiUrl,{method:'POST',headers:{'Content-Type':'text/plain;charset=utf-8'},
+      body:JSON.stringify({action:'dashboard',token:CONFIG.token,empId,email})});
+    const a=await res.json();
+    if(a.error){msg.textContent=a.error;return;}
+    msg.textContent='';
+    document.getElementById('mgrLogin').style.display='none';
+    renderMgrDash(a);
+  }catch(e){msg.textContent='連線失敗：'+(e.message||e);}
+}
+function mgrBar(label,val,max,suffix){return `<div class="barline"><b>${label}</b><div class="bar"><i style="width:${Math.max(0,Math.min(100,val/max*100))}%"></i></div><span class="vv">${val}${suffix||''}</span></div>`;}
+function renderMgrDash(a){
+  const d=document.getElementById('mgrDash');
+  let h='';
+  if(a.units && a.units.length>1){ h+=`<p class="muted" style="margin:4px 2px 0">你管理 ${a.units.length} 個單位，以下分別呈現：</p>`; }
+  (a.results||[]).forEach(u=>{ h+=renderUnitBlock(u); });
+  h+=`<div class="actions" style="margin-top:8px"><button class="btn btn-ghost" onclick="location.reload()">← 重新登入</button></div>`;
+  d.innerHTML=h;
+}
+function renderUnitBlock(u){
+  let h=`<div class="card"><div class="card-h"><h3>${u.unit}</h3></div><p class="desc">作答人數：${u.count} 人　·　單位整體統計（發展規劃用途）</p>`;
+  if(!u.count){ return h+`<p class="muted">此單位目前尚無作答資料。</p></div>`; }
+  h+=`<div class="stats">
+    <div class="stat"><div class="lab">作答人數</div><div class="big">${u.count}<span class="unit"> 人</span></div></div>
+    <div class="stat"><div class="lab">平均職涯滿意度</div><div class="big">${u.avgSatisfaction??'—'}<span class="unit"> /100</span></div></div>
+    <div class="stat"><div class="lab">平均平衡度</div><div class="big">${u.avgBalance??'—'}<span class="unit"> /100</span></div></div>
+    <div class="stat"><div class="lab">滿意度偏低(<50)</div><div class="big">${u.lowSatCount??0}<span class="unit"> 人</span></div></div>
+    <div class="stat"><div class="lab">維持／轉換期</div><div class="big">${u.transitionCount??0}<span class="unit"> 人</span></div></div>
+    ${u.avgResume!=null?`<div class="stat"><div class="lab">平均履歷強度</div><div class="big">${u.avgResume}<span class="unit"> /100</span></div></div>`:''}
+  </div>`;
+  if(u.radarAvg && Object.keys(u.radarAvg).length){
+    h+=`<div class="secti">職涯滿意度 · 各面向平均（1–10）</div>`+Object.keys(u.radarAvg).map(k=>mgrBar(k,u.radarAvg[k],10,' /10')).join('');
+  }
+  if(u.stageCount && Object.keys(u.stageCount).length){
+    h+=`<div class="secti">職涯階段分布</div>`+Object.keys(u.stageCount).map(k=>mgrBar((u.stageName&&u.stageName[k])||k,u.stageCount[k],u.count,' 人')).join('');
+  }
+  h+=`<div class="secti">團隊主要動機（Top）</div><div class="chips">${(u.anchorTop||[]).map(x=>`<span class="tg">${x.k}｜${x.v} 人</span>`).join('')||'—'}</div>`;
+  h+=`<div class="secti">常見能力缺口（最低自評，Top）</div><div class="chips">${(u.skillGapTop||[]).map(x=>`<span class="tg" style="background:#FCEDE4;color:#C55A11">${x.k}｜${x.v} 人</span>`).join('')||'—'}</div>`;
+  h+=`<p class="muted" style="margin-top:14px">用途建議：依「常見能力缺口」安排培訓；對「滿意度偏低／維持轉換期」的同仁主動開啟職涯發展對話。</p></div>`;
+  return h;
+}
 buildForm();
+showRole('landing');
 </script>
 </body>
 </html>
