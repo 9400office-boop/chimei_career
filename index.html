@@ -268,16 +268,16 @@ canvas{max-width:100%;height:auto}
   </div>
   <div class="rolewrap">
     <div class="rolecard" onclick="showRole('employee')">
-      <div class="roleicon"></div>
+      <div class="roleicon">員</div>
       <h3>我是員工</h3>
       <p>填寫職涯測評，取得個人化的職涯地圖與發展建議。</p>
       <span class="rolego">開始填寫 →</span>
     </div>
     <div class="rolecard mgr" onclick="showRole('manager')">
-      <div class="roleicon"></div>
-      <h3>我是主管</h3>
+      <div class="roleicon">主</div>
+      <h3>我是部門主管</h3>
       <p>輸入人事號與 Email 登入，檢視所屬單位的職涯發展彙整。</p>
-      <span class="rolego">主管登入 →</span>
+      <span class="rolego">部門主管登入 →</span>
     </div>
   </div>
 </div>
@@ -286,7 +286,7 @@ canvas{max-width:100%;height:auto}
 <div id="mgr" style="display:none">
   <div class="card" id="mgrLogin" style="max-width:460px;margin:36px auto">
     <div class="card-h"><h3>主管登入</h3></div>
-    <p class="desc">輸入你的人事號與院內 Email，檢視所屬單位的彙整。</p>
+    <p class="desc">輸入人事號與Email，檢視所屬單位的彙整。</p>
     <label class="fld">人事號</label><input type="text" id="mgrId" placeholder="">
     <label class="fld" style="margin-top:12px">Email</label><input type="text" id="mgrEmail" placeholder="">
     <div class="actions" style="margin-top:18px">
@@ -301,23 +301,24 @@ canvas{max-width:100%;height:auto}
 <div id="assess" style="display:none">
   <button class="btn btn-ghost" onclick="showRole('landing')" style="margin:4px 0 4px">← 返回首頁</button>
   <div class="hero">
-    <h2>職涯發展測評</h2>
-    <p>花幾分鐘填寫下列題目，系統會即時為你整理出個人化的職涯報告與發展建議。所有內容僅用於你的職涯規劃。</p>
-    <p style="font-size:.74rem;color:var(--muted-2);margin-top:6px">填寫前請知悉：你的單位主管可檢視測評結果。</p>
+    <h2>職涯導覽</h2>
+    <p>花幾分鐘填寫下列題目，系統會為你整理出個人化的職涯報告與發展建議。所有內容僅用於你的職涯規劃。</p>
+    <p style="font-size:.74rem;color:var(--muted-2);margin-top:6px"></p>
   </div>
 
   <div class="card">
     <div class="card-h"><h3>履歷健檢</h3><span class="muted" style="font-size:.78rem">選用</span></div>
-    <p class="desc">上傳或貼上履歷，系統會先去除個資，再用「行動＋成果＋對雇主價值」的三層寫法做健檢與改寫，並結合你的測評給出量化建議與價值主張。</p>
+    <p class="desc">上傳或貼上履歷，系統會先去除個資後做履歷健檢與改寫，並結合測評給出量化建議與價值主張。</p>
     <div class="upbox">
       <div class="upbox-h">上傳或貼上履歷</div>
       <input type="file" id="cvFile" accept=".txt,.pdf,.docx">
-      <textarea id="cvPaste" placeholder="直接貼上履歷文字"></textarea>
-      <div style="margin-top:10px"><label class="fld">想應徵的方向／職位（選填）</label><input type="text" id="cvTarget" placeholder=""></div>
+      <textarea id="cvPaste" placeholder="或直接貼上履歷文字"></textarea>
+      <div style="margin-top:10px"><label class="fld">想應徵的方向／職位(選填)</label><input type="text" id="cvTarget" placeholder=""></div>
       <button type="button" class="btn btn-ghost" style="margin-top:10px" onclick="deidentifyCV()">履歷預覽</button>
       <div class="cvstatus" id="cvStatus"></div>
-      <div class="cvpreview" id="cvPreview" style="display:none"></div>
-      <p class="cvnote">移除個資；分析的是「經歷內容」。建議避免上傳含照片的檔案。</p>
+      <textarea class="cvpreview" id="cvPreview" style="display:none;width:100%;resize:vertical;min-height:140px" placeholder="內容會顯示在這裡，可直接編輯"></textarea>
+      <button class="btn btn-primary" id="cvGoBtn" style="display:none;margin-top:12px" onclick="document.getElementById('genBtn').scrollIntoView({behavior:'smooth',block:'center'})">已擷取！請完成下面測評</button>
+      <p class="cvnote">移除個資<b>可在上方框中直接刪除漏網的內容</b>建議避免上傳含照片的檔案。<br>履歷健檢會在你按「生成我的職涯報告」時，連同報告一起產出</p>
     </div>
   </div>
 
@@ -325,7 +326,7 @@ canvas{max-width:100%;height:auto}
     <div class="card-h"><span class="idx">A</span><h3>專業檔案</h3></div>
     <div class="grid2">
       <div><label class="fld">姓名</label><input type="text" id="p_name" placeholder="請輸入姓名"></div>
-      <div><label class="fld">單位／部門</label><select id="p_unit"><option value="">請選擇…</option><option>深耕辦公室</option><option>藥劑部</option><option>教學部</option><option>其他</option></select></div>
+      <div><label class="fld">單位／部門</label><select id="p_unit"><option value="">請選擇…</option><option>其他</option></select></div>
       <div><label class="fld">現職</label><input type="text" id="p_role" placeholder=""></div>
       <div><label class="fld">投入年資</label><input type="text" id="p_years" placeholder="例：5 年"></div>
       <div><label class="fld">專業領域 / 專長（逗號分隔）</label><input type="text" id="p_field" placeholder="例：課程設計, 數位教學, 資料分析"></div>
@@ -390,7 +391,7 @@ canvas{max-width:100%;height:auto}
 
   <div class="card">
     <div class="card-h"><span class="idx">I</span><h3>經驗與成長</h3></div>
-    <p class="desc">挑一段你印象最深的工作經驗，用下面 5 個問題回顧。系統會把它整理成「履歷亮點與量化建議」，並回顧你的內在成長。</p>
+    <p class="desc">挑一段你印象最深的工作經驗，用下面 5 個問題回顧。</p>
     <div class="grid2">
       <div class="field"><label class="fld">1. 情境：當時面對什麼狀況、或要解決什麼問題？</label><textarea id="exp_situation" placeholder="例：單位要導入新的數位教學，但同仁不熟工具、意願低"></textarea></div>
       <div class="field"><label class="fld">2. 行動：你具體做了什麼？（你的角色與關鍵作為）</label><textarea id="exp_action" placeholder="例：設計分階段工作坊、做操作手冊、一對一陪跑"></textarea></div>
@@ -402,8 +403,8 @@ canvas{max-width:100%;height:auto}
 
   <div class="card">
     <div class="actions">
-      <span class="note">完成後按下方按鈕，系統會即時為你生成個人化職涯報告。</span>
-      <button class="btn btn-primary" onclick="run()">生成我的職涯報告 →</button>
+      <span class="note">完成後按下方按鈕，系統為你生成個人化職涯報告。</span>
+      <button class="btn btn-primary" id="genBtn" onclick="run()">生成我的職涯報告 →</button>
     </div>
   </div>
 </div>
@@ -577,7 +578,7 @@ async function extractText(file){
   }
   throw new Error('不支援的格式（請用 .txt/.pdf/.docx 或直接貼上文字）');
 }
-// 去除直接可識別個資：Email、身分證、電話、生日、地址、（有標籤的）姓名
+// 
 function deidentify(t){
   if(!t) return '';
   let s=String(t);
@@ -591,7 +592,7 @@ function deidentify(t){
   s=s.replace(/[一-龥]{2,3}[市縣][一-龥]{1,4}[區鄉鎮市][一-龥0-9]{0,12}(路|街|大道|巷|弄)[\d一-龥號樓之巷弄F\-]+/g,'［已移除地址］');
   return s;
 }
-let cvCleanText='';   // 去識別化後的履歷文字（暫存記憶體，生成時送後端分析，不落地）
+let cvCleanText='';   // 
 async function deidentifyCV(){
   const fileEl=document.getElementById('cvFile'), paste=document.getElementById('cvPaste').value.trim();
   const status=document.getElementById('cvStatus'), prev=document.getElementById('cvPreview');
@@ -604,17 +605,20 @@ async function deidentifyCV(){
   }catch(e){ status.textContent='讀取失敗：'+e.message; return; }
   const clean=deidentify(raw);
   cvCleanText=clean;
-  prev.style.display='block'; prev.textContent=clean;
+  prev.style.display='block'; prev.value=clean;   // 可編輯，讓使用者刪掉漏網的內容
   fileEl.value=''; // 不保留原始檔
-  status.textContent='✓ 已移除個資（見下方預覽）。生成報告時會自動做履歷健檢與改寫。請先看一下預覽確認沒有漏網個資。';
+  var go=document.getElementById('cvGoBtn'); if(go) go.style.display='inline-block';
+  status.textContent='✓ 已移除個資（見下方預覽）。請先確認沒有漏網個資，再往下填測評、按「生成我的職涯報告」，履歷健檢會一起產出。';
 }
-// 
+// 生成時呼叫：把去識別化履歷＋自評強項＋目標送後端，做三層健檢與改寫
 async function analyzeResume(data,sc){
-  if(!cvCleanText || !CONFIG.apiUrl) return null;
+  const prevEl=document.getElementById('cvPreview');
+  const txt=((prevEl&&prevEl.value)||cvCleanText||'').trim();   // 以使用者確認/編輯後的內容為準
+  if(!txt || !CONFIG.apiUrl) return null;
   try{
     const res=await fetch(CONFIG.apiUrl,{method:'POST',headers:{'Content-Type':'text/plain;charset=utf-8'},
       body:JSON.stringify({action:'resume',token:CONFIG.token,
-        text:cvCleanText.slice(0,6000),
+        text:txt.slice(0,6000),
         target:document.getElementById('cvTarget')?document.getElementById('cvTarget').value:'',
         topSkills:sc.topSkills.map(s=>s.label), goals:data.goals})});
     const j=await res.json();
@@ -647,7 +651,7 @@ function score(d){
   const radarBy=Object.fromEntries(r.map(x=>[x.k,x]));
   const valueGaps=d.values.filter(v=>v.score>=4 && radarBy[v.facet] && radarBy[v.facet].cur<6);
   const skillsSorted=[...d.skills].sort((a,b)=>b.score-a.score);
-  // 
+  // Big Five：每特質兩題（正向 + 反向(6-x)）求和 → 2..10
   const bf={};BIGFIVE.forEach((b,i)=>{const v=d.bigfive[i].rev?6-d.bigfive[i].raw:d.bigfive[i].raw;bf[b.t]=(bf[b.t]||0)+v;});
   const bfLevels=Object.fromEntries(Object.keys(bf).map(t=>[t, bf[t]>=8?'high':bf[t]<=4?'low':'mid']));
   const lowC=d.fourc.filter(c=>c.score<3);
@@ -765,16 +769,18 @@ function secAdvice(gen,key){ return (gen.sections&&gen.sections[key]) ? `<div cl
 // 履歷優化分頁渲染
 function renderResume(r){
   if(!r) return `<p class="muted">（選用）回到測評頁最上方的「履歷健檢」上傳或貼上履歷、按「去識別化」，生成報告時這裡就會出現履歷強度、弱句改寫、量化建議與價值主張。</p>`;
-  if(r.error) return `<p class="muted">履歷分析未完成：${r.error}。請確認後端已部署新版本（含 resume 動作）、或稍後再試。你的去識別化內容仍保留在測評頁。</p>`;
+  if(r.error) return `<p class="muted">履歷分析未完成：${r.error}。請確認後端已部署「新版本」，或稍後再試。你的去識別化內容仍保留在測評頁。</p>
+    ${r.raw?`<div class="cvpreview" style="display:block;margin-top:10px;white-space:pre-wrap">AI 實際回傳（診斷用）：\n${String(r.raw).replace(/</g,'&lt;')}</div>`:''}
+    ${r.detail?`<p class="muted" style="margin-top:6px">錯誤細節：${String(r.detail).replace(/</g,'&lt;')}</p>`:''}`;
   const sc = (typeof r.score==='number')?r.score:null;
   let h='';
   if(sc!==null){
     h+=`<div class="stats"><div class="stat"><div class="lab">履歷強度</div><div class="big">${sc}<span class="unit"> /100</span></div></div></div>`;
   }
   if(r.summary) h+=`<div class="mentorbox">${r.summary}</div>`;
-  if(r.valueProp) h+=`<div class="secti ok">價值主張</div><div class="kard t2"><p style="font-size:.98rem;color:var(--ink)">${r.valueProp}</p></div>`;
+  if(r.valueProp) h+=`<div class="secti ok">價值主張（可放履歷開頭／自我介紹）</div><div class="kard t2"><p style="font-size:.98rem;color:var(--ink)">${r.valueProp}</p></div>`;
   if(Array.isArray(r.weak)&&r.weak.length){
-    h+=`<div class="secti">改寫</div>`;
+    h+=`<div class="secti">弱句改寫（三層寫法：行動＋成果＋對雇主價值）</div>`;
     h+=r.weak.map(w=>`<div class="kard" style="margin-bottom:10px"><p class="muted" style="font-size:.84rem">原句：${w.original||'—'}</p><p style="margin-top:6px;color:var(--ink)"><b>改寫：</b>${w.rewrite||'—'}</p></div>`).join('');
   }
   if(Array.isArray(r.quantify)&&r.quantify.length){
@@ -1033,7 +1039,21 @@ function renderUnitBlock(u){
   h+=`<p class="muted" style="margin-top:14px">用途建議：依「常見能力缺口」安排培訓；對「滿意度偏低／維持轉換期」的同仁主動開啟職涯發展對話。</p></div>`;
   return h;
 }
+// 單位下拉從後端「部門」分頁讀取，不寫死在前端
+async function loadUnits(){
+  if(!CONFIG.apiUrl) return;
+  try{
+    const res=await fetch(CONFIG.apiUrl,{method:'POST',headers:{'Content-Type':'text/plain;charset=utf-8'},
+      body:JSON.stringify({action:'units',token:CONFIG.token})});
+    const j=await res.json();
+    if(j&&j.units&&j.units.length){
+      const sel=document.getElementById('p_unit');
+      sel.innerHTML='<option value="">請選擇…</option>'+j.units.map(u=>`<option>${u}</option>`).join('')+'<option>其他</option>';
+    }
+  }catch(e){ /* 後端讀不到就保留預設選項 */ }
+}
 buildForm();
+loadUnits();
 showRole('landing');
 </script>
 </body>
